@@ -10,7 +10,8 @@ import me.jesfot.jesbot.commands.SpecialHelpCommand;
 import me.jesfot.jesbot.commands.StopCommand;
 import me.jesfot.jesbot.commands.VersionCommand;
 import me.jesfot.jesbot.commands.WhoIsCommand;
-import me.jesfot.jesbot.commands.YoutubeCommand;
+import me.jesfot.jesbot.commands.music.PauseCommand;
+import me.jesfot.jesbot.commands.music.PlayCommand;
 import me.jesfot.jesbot.commands.music.VolumeCommand;
 import me.jesfot.jesbot.config.Configuration;
 import me.jesfot.jesbot.listeners.BotReadyListener;
@@ -89,9 +90,7 @@ public class JesBot
 		
 		this.commands.addCommand(new VersionCommand());
 		this.commands.addCommand(new SayAsCommand());
-		this.commands.addCommand(new YoutubeCommand());
-		this.commands.addCommand(new me.jesfot.jesbot.commands.music.StopCommand());
-		this.commands.addCommand(new VolumeCommand());
+		//this.commands.addCommand(new YoutubeCommand());
 		this.commands.addCommand(new DelLastCommand());
 		this.commands.addCommand(new WhoIsCommand());
 		new ReloadCommand(this);
@@ -99,5 +98,10 @@ public class JesBot
 		new SetDefaultChannelCommand(this);
 		new SetJoinLeaveMsgCommand(this);
 		new SpecialHelpCommand(this);
+		// Music :
+		this.commands.addCommand(new PlayCommand());
+		this.commands.addCommand(new VolumeCommand());
+		this.commands.addCommand(new PauseCommand());
+		this.commands.addCommand(new me.jesfot.jesbot.commands.music.StopCommand());
 	}
 }

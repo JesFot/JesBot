@@ -50,7 +50,27 @@ public abstract class BaseMusicCommand extends BaseCommand
 				}
 			}
 		}
+		if(chan == null)
+		{
+			Utils.sendSafeMessages(channel, sender.mention(true) + " You must be connected to a voice channel to use that command !");
+			return false;
+		}
 		return this.executemusic(sender, fullContents, chan, datas);
+	}
+	
+	public final boolean fake_command(IUser sender, String fullContents, IMessage message, IVoiceChannel channel)
+	{
+		if(channel == null)
+		{
+			Utils.sendSafeMessages(message.getChannel(), sender.mention(true) + " You must give a voice channel to use that command !");
+			return false;
+		}
+		if(message.getChannel().isPrivate())
+		{
+			Utils.sendSafeMessages(message.getChannel(), "You cannot control music by private messages !");
+			return false;
+		}
+		return this.executemusic(sender, fullContents, channel, message);
 	}
 	
 	public abstract boolean executemusic(IUser sender, String fullContents, IVoiceChannel channel, IMessage datas);

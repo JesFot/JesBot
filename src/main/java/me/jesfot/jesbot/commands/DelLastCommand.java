@@ -31,7 +31,7 @@ public class DelLastCommand extends BaseCommand
 			{
 				if(msg.getAuthor().getID().equals(msg.getClient().getApplicationClientID()))
 				{
-					if(msg.getMentions().contains(sender))
+					if(msg.getMentions().get(0).equals(sender))
 					{
 						msg.delete();
 						break;

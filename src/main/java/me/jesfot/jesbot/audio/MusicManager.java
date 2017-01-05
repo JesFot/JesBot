@@ -1,6 +1,10 @@
 package me.jesfot.jesbot.audio;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import net.dv8tion.d4j.player.MusicPlayer;
 import net.dv8tion.jda.player.source.LocalSource;
@@ -11,10 +15,12 @@ import sx.blah.discord.handle.obj.IGuild;
 public class MusicManager
 {
 	private MusicPlayer player;
+	//private AudioPlayer audioPlayer;
 	
 	public MusicManager(IGuild guild, final float default_volume)
 	{
 		IAudioProvider provider = guild.getAudioManager().getAudioProvider();
+		//this.audioPlayer = AudioPlayer.getAudioPlayerForGuild(guild);
 		if(!(provider instanceof MusicPlayer))
 		{
 			this.player = new MusicPlayer();
@@ -27,17 +33,25 @@ public class MusicManager
 		}
 	}
 	
-	public void addMusic(File file)
+	public void addMusic(File file) throws UnsupportedAudioFileException, IOException
 	{
 		this.player.getAudioQueue().add(new LocalSource(file));
+		//this.audioPlayer.queue(file);
 	}
 	
-	public void addMusics(File...files)
+	public void addMusics(File...files) throws UnsupportedAudioFileException, IOException
 	{
 		for(File file : files)
 		{
 			this.player.getAudioQueue().add(new LocalSource(file));
+			//this.audioPlayer.queue(file);
 		}
+	}
+	
+	public void addMusic(URL url) throws UnsupportedAudioFileException, IOException
+	{
+		this.player.getAudioQueue().add(new RemoteSource(url.toString()));
+		//this.audioPlayer.queue(url);
 	}
 	
 	public void addMusic(RemoteSource source)
@@ -65,7 +79,12 @@ public class MusicManager
 			{
 				this.player.play();
 			}
-		}
+		}			
+	}
+	
+	public boolean isPaused()
+	{
+		return this.player.isPaused();
 	}
 	
 	public void pause()

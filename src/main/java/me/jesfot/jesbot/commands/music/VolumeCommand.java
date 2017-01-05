@@ -13,7 +13,7 @@ public class VolumeCommand extends BaseMusicCommand
 	public VolumeCommand()
 	{
 		super("volume", "Manage current bot vulome", "Gets or set the volume", "<cmd> [newVolume]");
-		this.setChannelPermission(Permissions.VOICE_SPEAK);
+		this.setChannelPermission(Permissions.VOICE_CONNECT);
 	}
 	
 	@Override

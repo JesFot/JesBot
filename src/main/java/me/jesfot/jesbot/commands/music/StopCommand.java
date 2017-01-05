@@ -13,7 +13,7 @@ public class StopCommand extends BaseMusicCommand
 	public StopCommand()
 	{
 		super("stop", "stop a music", "Stop the current song and clear the playlist", "<cmd>");
-		this.setChannelPermission(Permissions.VOICE_SPEAK);
+		this.setChannelPermission(Permissions.VOICE_CONNECT);
 	}
 	
 	@Override

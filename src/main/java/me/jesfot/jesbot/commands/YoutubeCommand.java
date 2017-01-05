@@ -16,7 +16,7 @@ public class YoutubeCommand extends BaseCommand
 {
 	public YoutubeCommand()
 	{
-		super("youtube", "Do somethings with youtube", "Search for youtube videos and print them or play it",
+		super("youtube", "Do somethings with youtube", "Search for youtube videos and print them",
 				"<cmd> [wm <maxVideos>] show <search|link...> | <cmd> [wm <maxVideos>] <search|link...>");
 		this.setMinimalPermission(Permissions.VOICE_SPEAK);
 	}
@@ -30,6 +30,7 @@ public class YoutubeCommand extends BaseCommand
 			return false;
 		}
 		IMessage resp = Utils.sendSafeMessages(channel, sender.mention(true) + " Searching a video for you....");
+		channel.setTypingStatus(true);
 		Utils.deleteSafeMessages(datas);
 		boolean show = false;
 		String search_link = "";
@@ -59,12 +60,14 @@ public class YoutubeCommand extends BaseCommand
 		List<Video> results = Search.search(search_link, max);
 		if(results == null)
 		{
-			Utils.editSafeMessages(resp, sender.mention(true) + " Sorry but there was error while searching");
+			Utils.editSafeMessages(resp, sender.mention(true) + " Sorry but an error occurred while searching");
+			channel.setTypingStatus(false);
 			return false;
 		}
 		if(results.isEmpty())
 		{
 			Utils.editSafeMessages(resp, sender.mention(true) + " No videos was found for the search " + search_link);
+			channel.setTypingStatus(false);
 			return false;
 		}
 		if(show)
@@ -85,6 +88,7 @@ public class YoutubeCommand extends BaseCommand
 			}
 			msg += "```\n";
 			Utils.editSafeMessages(resp, msg);
+			channel.setTypingStatus(false);
 			return true;
 		}
 		return true;
