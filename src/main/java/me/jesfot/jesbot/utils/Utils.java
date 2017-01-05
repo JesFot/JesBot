@@ -2,6 +2,7 @@ package me.jesfot.jesbot.utils;
 
 import java.util.List;
 
+import me.jesfot.jesbot.Statics;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.IChannel;
@@ -48,6 +49,41 @@ public class Utils
 			return guild.getChannelByID(call);
 		}
 		List<IChannel> results = guild.getChannelsByName(call);
+		if(results.isEmpty())
+		{
+			return null;
+		}
+		return results.get(0);
+	}
+	
+	public static boolean isMyOwner(IUser user)
+	{
+		if(user.isBot())
+		{
+			return false;
+		}
+		for(String str : Statics.AUTHORS)
+		{
+			String id = str.split("|")[1];
+			if(user.getID() == id)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static IUser getUserById(IGuild guild, String call)
+	{
+		if(call.startsWith("<@") && call.endsWith(">"))
+		{
+			call = call.substring(2, call.length() - 1);
+		}
+		if(guild.getUserByID(call) != null)
+		{
+			return guild.getUserByID(call);
+		}
+		List<IUser> results = guild.getUsersByName(call);
 		if(results.isEmpty())
 		{
 			return null;

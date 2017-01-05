@@ -9,6 +9,7 @@ import me.jesfot.jesbot.commands.SetJoinLeaveMsgCommand;
 import me.jesfot.jesbot.commands.SpecialHelpCommand;
 import me.jesfot.jesbot.commands.StopCommand;
 import me.jesfot.jesbot.commands.VersionCommand;
+import me.jesfot.jesbot.commands.WhoIsCommand;
 import me.jesfot.jesbot.commands.YoutubeCommand;
 import me.jesfot.jesbot.commands.music.VolumeCommand;
 import me.jesfot.jesbot.config.Configuration;
@@ -61,6 +62,7 @@ public class JesBot
 		this.commands.addCommand(new me.jesfot.jesbot.commands.music.StopCommand());
 		this.commands.addCommand(new VolumeCommand());
 		this.commands.addCommand(new DelLastCommand());
+		this.commands.addCommand(new WhoIsCommand());
 		new ReloadCommand(this);
 		new StopCommand(this);
 		new SetDefaultChannelCommand(this);
@@ -96,7 +98,6 @@ public class JesBot
 	public void reload() throws DiscordException, RateLimitException, InterruptedException
 	{
 		this.getCommandHandler().clear();
-		this.getConfig().save();
 		
 		this.commands.addCommand(new VersionCommand());
 		this.commands.addCommand(new SayAsCommand());
@@ -104,6 +105,7 @@ public class JesBot
 		this.commands.addCommand(new me.jesfot.jesbot.commands.music.StopCommand());
 		this.commands.addCommand(new VolumeCommand());
 		this.commands.addCommand(new DelLastCommand());
+		this.commands.addCommand(new WhoIsCommand());
 		new ReloadCommand(this);
 		new StopCommand(this);
 		new SetDefaultChannelCommand(this);

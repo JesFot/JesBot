@@ -13,6 +13,7 @@ public class SayAsCommand extends BaseCommand
 		super("/sayas", "Say something as bot", "Say something throught the bot in channel you want",
 				"<cmd> <channel> <msg...>");
 		this.setMinimalPermission(Permissions.MANAGE_MESSAGES);
+		this.setAllowedForOwner(true);
 	}
 	
 	@Override

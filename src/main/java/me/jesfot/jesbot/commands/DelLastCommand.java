@@ -16,7 +16,8 @@ public class DelLastCommand extends BaseCommand
 	public DelLastCommand()
 	{
 		super("dellast", "Delete my last message", "Delete my last response to someone", "<cmd>");
-		this.setMinimalPermission(Permissions.MANAGE_MESSAGES);
+		this.setMinimalPermission(Permissions.SEND_MESSAGES);
+		this.setAllowedForOwner(true);
 	}
 	
 	@Override

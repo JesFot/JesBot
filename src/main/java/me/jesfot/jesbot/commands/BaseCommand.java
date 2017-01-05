@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import me.jesfot.jesbot.Statics;
 import me.jesfot.jesbot.utils.Utils;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
@@ -25,6 +26,7 @@ public abstract class BaseCommand
 	private String fullCommand;
 	
 	private boolean activated;
+	private boolean allowForOwner;
 	
 	protected BaseCommand(final String command, final String shortdesc, final String longdesc, final String p_usage)
 	{
@@ -34,14 +36,20 @@ public abstract class BaseCommand
 		this.usage = p_usage;
 		this.minimalPerm = null;
 		this.activated = true;
+		this.allowForOwner = false;
 	}
 	
-	protected void disable()
+	protected final void disable()
 	{
 		this.activated = false;
 	}
 	
-	public boolean isDisabled()
+	protected final void setAllowedForOwner(boolean value)
+	{
+		this.allowForOwner = value;
+	}
+	
+	public final boolean isDisabled()
 	{
 		return !this.activated;
 	}
@@ -76,19 +84,24 @@ public abstract class BaseCommand
 		return this.minimalPerm;
 	}
 	
+	public final boolean isAllowForOwner()
+	{
+		return this.allowForOwner;
+	}
+	
 	public final boolean onCommand(IUser sender, String fullContents, IChannel channel, IMessage datas)
 	{
 		if(!this.activated)
 		{
-			BaseCommand.logCommand(sender, fullContents);
+			BaseCommand.logCommand(sender, datas.getGuild(), fullContents);
 			Utils.sendSafeMessages(channel, sender.mention(true) + " This command is disabled, sorry !");
 			return false;
 		}
-		if(!Utils.hasPermissionSomewhere(sender, channel, this.getMinimalPermission()))
+		if(!(Utils.isMyOwner(sender) && this.allowForOwner) && !Utils.hasPermissionSomewhere(sender, channel, this.getMinimalPermission()))
 		{
 			return false;
 		}
-		BaseCommand.logCommand(sender, fullContents);
+		BaseCommand.logCommand(sender, datas.getGuild(), fullContents);
 		this.fullCommand = fullContents;
 		return this.execute(sender, fullContents, channel, datas);
 	}
@@ -118,10 +131,10 @@ public abstract class BaseCommand
 		return result;
 	}
 	
-	private static final void logCommand(IUser sender, final String fullCmd)
+	private static final void logCommand(IUser sender, IGuild guild, final String fullCmd)
 	{
 		Logger logger = LoggerFactory.getLogger("[" + Statics.BOT_NAME + "][CommandManager]");
-		logger.info(sender.getName() + "#" + sender.getDiscriminator() + " used command " + fullCmd);
+		logger.info("[" + guild.getName() + "]" + sender.getName() + "#" + sender.getDiscriminator() + " used command " + fullCmd);
 	}
 	
 	protected final void registerCommand(CommandHandler handler)

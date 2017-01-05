@@ -36,7 +36,7 @@ public class SpecialHelpCommand extends BaseCommand
 			msg += "```\n";
 			for(BaseCommand cmd : this.bot.getCommandHandler().getList())
 			{
-				if(Utils.hasPermissionSomewhere(sender, channel, cmd.getMinimalPermission())
+				if((Utils.hasPermissionSomewhere(sender, channel, cmd.getMinimalPermission()) || (cmd.isAllowForOwner() && Utils.isMyOwner(sender)))
 						&& !(channel.isPrivate() && cmd instanceof BaseMusicCommand) && !cmd.isDisabled())
 				{
 					msg += this.add(max, cmd.getName(), ' ') + " - " + cmd.getShortDescription() + "\n";

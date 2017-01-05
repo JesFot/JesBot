@@ -18,6 +18,7 @@ public class ReloadCommand extends BaseCommand
 		super("/reload", "Reload the bot", "Switch the bot off and then re-restart it", "<cmd>");
 		this.registerCommand(jb.getCommandHandler());
 		this.setMinimalPermission(Permissions.MANAGE_SERVER);
+		this.setAllowedForOwner(true);
 		this.bot = jb;
 		//this.disable();
 	}
