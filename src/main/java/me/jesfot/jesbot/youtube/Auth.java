@@ -1,0 +1,55 @@
+package me.jesfot.jesbot.youtube;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.List;
+
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.auth.oauth2.StoredCredential;
+import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
+import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.store.DataStore;
+import com.google.api.client.util.store.FileDataStoreFactory;
+
+public class Auth
+{
+	public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+	
+	public static final JsonFactory JSON_FACTORY = new JacksonFactory();
+	
+	private static final String CREDENTIALS_DIRECTORY = ".oauth-credentials";
+	
+	public static Credential authorize(List<String> scopes, String credentialsDatastore) throws IOException
+	{
+		// Load client secrets
+		Reader clientSecretReader = new InputStreamReader(Auth.class.getResourceAsStream("/client_secrets.json"));
+		GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, clientSecretReader);
+		
+		// CHecks that the defaults have been replaced (Default = "Enter X here")
+		if(clientSecrets.getDetails().getClientId().startsWith("Enter")
+				|| clientSecrets.getDetails().getClientSecret().startsWith("Enter "))
+		{
+			System.out.println("");
+			return null;
+		}
+		
+		FileDataStoreFactory fileDataStroreFactory = new FileDataStoreFactory(new File(System.getProperty("user.home")
+				+ "/" + CREDENTIALS_DIRECTORY));
+		DataStore<StoredCredential> datastore = fileDataStroreFactory.getDataStore(credentialsDatastore);
+		
+		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+				HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, scopes).setCredentialDataStore(datastore).build();
+		
+		LocalServerReceiver localReceiver = new LocalServerReceiver.Builder().setPort(8080).build();
+		
+		return new AuthorizationCodeInstalledApp(flow, localReceiver).authorize(clientSecrets.getDetails().getClientId());
+	}
+}
