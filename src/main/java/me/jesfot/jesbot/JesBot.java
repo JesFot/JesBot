@@ -21,7 +21,6 @@ import me.jesfot.jesbot.utils.Utils;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.RateLimitException;
 
 public class JesBot
 {
@@ -56,21 +55,10 @@ public class JesBot
 		
 		this.commands = new CommandHandler();
 		
-		this.commands.addCommand(new VersionCommand());
-		this.commands.addCommand(new SayAsCommand());
-		this.commands.addCommand(new YoutubeCommand());
-		this.commands.addCommand(new me.jesfot.jesbot.commands.music.StopCommand());
-		this.commands.addCommand(new VolumeCommand());
-		this.commands.addCommand(new DelLastCommand());
-		this.commands.addCommand(new WhoIsCommand());
-		new ReloadCommand(this);
-		new StopCommand(this);
-		new SetDefaultChannelCommand(this);
-		new SetJoinLeaveMsgCommand(this);
-		new SpecialHelpCommand(this);
+		this.reloadCmd();
 		
 		EventDispatcher dispacher = this.client.getDispatcher();
-		dispacher.registerListener(new BotReadyListener());
+		dispacher.registerListener(new BotReadyListener(this));
 		dispacher.registerListener(new ReloadListener());
 		dispacher.registerListener(new MessagesListener(this));
 		dispacher.registerListener(new UserListener(this));
@@ -95,7 +83,7 @@ public class JesBot
 		return this.configMain;
 	}
 	
-	public void reload() throws DiscordException, RateLimitException, InterruptedException
+	public void reloadCmd()
 	{
 		this.getCommandHandler().clear();
 		

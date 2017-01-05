@@ -19,7 +19,7 @@ public class CommandHandler
 	
 	public void addCommand(BaseCommand cmd)
 	{
-		this.commands.put(cmd.getName(), cmd);
+		this.commands.put(cmd.getName().toLowerCase(), cmd);
 	}
 	
 	public void removeCommand(String cmdName)
@@ -34,6 +34,10 @@ public class CommandHandler
 	
 	public BaseCommand getCommand(String cmdName)
 	{
+		if(cmdName.equalsIgnoreCase("h") || cmdName.equalsIgnoreCase("?"))
+		{
+			return this.getCommand("help");
+		}
 		return this.commands.get(cmdName);
 	}
 	
@@ -59,7 +63,7 @@ public class CommandHandler
 	{
 		String tmp;
 		tmp = msg.substring(Statics.COMMAND_DESIGNATOR.length());
-		return tmp.split(" ")[0];
+		return tmp.split(" ")[0].toLowerCase();
 	}
 
 	public Collection<BaseCommand> getList()

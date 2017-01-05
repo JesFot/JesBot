@@ -129,6 +129,10 @@ public class Utils
 	
 	public static IMessage sendSafeMessages(IChannel channel, String message)
 	{
+		if(channel == null)
+		{
+			return null;
+		}
 		try
 		{
 			return channel.sendMessage(message);

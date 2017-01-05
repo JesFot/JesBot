@@ -31,7 +31,7 @@ public class ReloadCommand extends BaseCommand
 			Utils.deleteSafeMessages(datas);
 			try
 			{
-				this.bot.reload();
+				this.bot.reloadCmd();
 				//ReloadCommand.__channel = channel.getID();
 			}
 			catch(Exception e)
