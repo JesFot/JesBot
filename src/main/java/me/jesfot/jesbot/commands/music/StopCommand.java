@@ -1,5 +1,6 @@
 package me.jesfot.jesbot.commands.music;
 
+import me.jesfot.jesbot.JesBot;
 import me.jesfot.jesbot.audio.MusicManager;
 import me.jesfot.jesbot.commands.BaseMusicCommand;
 import me.jesfot.jesbot.utils.Utils;
@@ -23,6 +24,12 @@ public class StopCommand extends BaseMusicCommand
 		{
 			return false;
 		}
+		if(!channel.isConnected())
+		{
+			Utils.sendSafeMessages(datas.getChannel(), sender.mention(true) + " I'm not in this channel... (" + channel.getName() + ").");
+			Utils.deleteSafeMessages(datas);
+			return true;
+		}
 		IMessage response = Utils.sendSafeMessages(datas.getChannel(), sender.mention(true) + " Stopping current song...");
 		Utils.deleteSafeMessages(datas);
 		try
@@ -31,9 +38,10 @@ public class StopCommand extends BaseMusicCommand
 			if(manager.isNotPlaying() && manager.emptyList())
 			{
 				Utils.editSafeMessages(response, sender.mention(true) + " Playlist already empty");
+				JesBot.getInstance().leaveCh(channel.getGuild());
 				return true;
 			}
-			manager.stopAndClear();
+			JesBot.getInstance().leaveCh(channel.getGuild());
 		}
 		catch(Exception e)
 		{

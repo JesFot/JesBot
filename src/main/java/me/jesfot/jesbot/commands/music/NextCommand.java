@@ -1,5 +1,6 @@
 package me.jesfot.jesbot.commands.music;
 
+import me.jesfot.jesbot.JesBot;
 import me.jesfot.jesbot.audio.MusicManager;
 import me.jesfot.jesbot.commands.BaseMusicCommand;
 import me.jesfot.jesbot.utils.Utils;
@@ -8,11 +9,11 @@ import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.handle.obj.Permissions;
 
-public class PauseCommand extends BaseMusicCommand
+public class NextCommand extends BaseMusicCommand
 {
-	public PauseCommand()
+	public NextCommand()
 	{
-		super("pause", "pause the current song", "pause the current song", "<cmd>");
+		super("next", "pass to the next song", "Move to the next song in the playlist", "<cmd>");
 		this.setAllowedForOwner(false);
 		this.setMinimalPermission(null);
 		this.setChannelPermission(Permissions.VOICE_CONNECT);
@@ -31,30 +32,29 @@ public class PauseCommand extends BaseMusicCommand
 			Utils.deleteSafeMessages(datas);
 			return true;
 		}
-		IMessage response = Utils.sendSafeMessages(datas.getChannel(), sender.mention(true) + " Pausing or playing the song...");
+		IMessage response = Utils.sendSafeMessages(datas.getChannel(), sender.mention(true) + " Skipping current song...");
 		Utils.deleteSafeMessages(datas);
 		try
 		{
-			MusicManager manager = new MusicManager(channel.getGuild(), 0.0f);
-			if(manager.isNotPlaying())
+			MusicManager manager = new MusicManager(datas.getGuild(), 0.50f);
+			if(manager.isNotPlaying() && manager.emptyList())
 			{
-				Utils.editSafeMessages(response, sender.mention(true) + " Any song is currently playing or paused.");
+				Utils.editSafeMessages(response, sender.mention(true) + " Playlist is empty");
+				JesBot.getInstance().leaveCh(channel.getGuild());
 				return true;
 			}
-			if(manager.isPaused())
+			if(manager.next())
 			{
-				manager.play();
-				Utils.editSafeMessages(response, sender.mention(true) + " Now playing the song.");
+				Utils.editSafeMessages(response, sender.mention(true) + " Succesfully skipped the song");
 			}
 			else
 			{
-				manager.pause();
-				Utils.editSafeMessages(response, sender.mention(true) + " Succesfully paused the song.");
+				Utils.editSafeMessages(response, sender.mention(true) + " Could not skip the song");
 			}
 		}
 		catch(Exception e)
 		{
-			Utils.editSafeMessages(response, sender.mention(true) + " Some errors occurred while pausing !?");
+			Utils.editSafeMessages(response, sender.mention(true) + " Some errors occurred while stopping !?");
 			return false;
 		}
 		return true;

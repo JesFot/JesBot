@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import me.jesfot.jesbot.JesBot;
 import me.jesfot.jesbot.audio.MusicManager;
 import me.jesfot.jesbot.commands.BaseMusicCommand;
 import me.jesfot.jesbot.utils.Utils;
@@ -26,7 +27,7 @@ public class PlayCommand extends BaseMusicCommand
 	@Override
 	public boolean executemusic(IUser sender, String fullContents, IVoiceChannel channel, IMessage datas)
 	{
-		if(this.getArguments().size() != 1 || channel == null)
+		if(this.getArguments().size() > 1 || channel == null)
 		{
 			return false;
 		}
@@ -36,17 +37,31 @@ public class PlayCommand extends BaseMusicCommand
 		}
 		try
 		{
-			channel.join();
+			JesBot.getInstance().connectCh(channel.getGuild(), channel.getID());
 		}
 		catch (MissingPermissionsException e1)
 		{
 			e1.printStackTrace();
 		}
-		IMessage response = Utils.sendSafeMessages(datas.getChannel(), sender.mention(true) + " Adding a new song...");
+		IMessage response = Utils.sendSafeMessages(datas.getChannel(), sender.mention(true) + " Adding and play a new song...");
 		Utils.deleteSafeMessages(datas);
-		try
+		if(this.getArguments().size() == 0)
 		{
 			MusicManager manager = new MusicManager(channel.getGuild(), 1.0f);
+			if(manager.isPaused())
+			{
+				manager.play();
+				Utils.editSafeMessages(response, sender.mention(true) + " Succcesfuly unpaused the playlist.");
+			}
+			else
+			{
+				Utils.editSafeMessages(response, sender.mention(true) + " Not paused.");
+			}
+			return true;
+		}
+		try
+		{
+			MusicManager manager = new MusicManager(channel.getGuild(), 0.50f);
 			if(PlayCommand.isUrl(this.getArguments().get(0)))
 			{
 				manager.addMusic(new URL(this.getArguments().get(0)));

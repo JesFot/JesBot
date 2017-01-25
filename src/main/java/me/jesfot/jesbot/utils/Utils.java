@@ -10,6 +10,7 @@ import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
@@ -56,16 +57,30 @@ public class Utils
 		return results.get(0);
 	}
 	
+	public static IVoiceChannel getVoiceChannelAnyWay(IGuild guild, String call)
+	{
+		if(call.startsWith("<#") && call.endsWith(">"))
+		{
+			call = call.substring(2, call.length() - 1);
+			return guild.getVoiceChannelByID(call);
+		}
+		List<IVoiceChannel> results = guild.getVoiceChannelsByName(call);
+		if(results.isEmpty())
+		{
+			return null;
+		}
+		return results.get(0);
+	}
+	
 	public static boolean isMyOwner(IUser user)
 	{
 		if(user.isBot())
 		{
 			return false;
 		}
-		for(String str : Statics.AUTHORS)
+		for(String id : Statics.AUTHORS_IDS)
 		{
-			String id = str.split("|")[1];
-			if(user.getID() == id)
+			if(user.getID().equals(id))
 			{
 				return true;
 			}
@@ -203,5 +218,17 @@ public class Utils
 			return 3;
 		}
 		return 0;
+	}
+	
+	public static int toInt(final String str, final int p_default)
+	{
+		try
+		{
+			return Integer.parseInt(str);
+		}
+		catch(NumberFormatException e)
+		{
+			return p_default;
+		}
 	}
 }

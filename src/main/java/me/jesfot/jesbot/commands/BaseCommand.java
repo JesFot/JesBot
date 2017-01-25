@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import me.jesfot.jesbot.Statics;
 import me.jesfot.jesbot.utils.Utils;
 import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
@@ -89,11 +88,19 @@ public abstract class BaseCommand
 		return this.allowForOwner;
 	}
 	
+	protected void setFullCommand(String something)
+	{
+		if(this instanceof BaseMusicCommand)
+		{
+			this.fullCommand = something;
+		}
+	}
+	
 	public final boolean onCommand(IUser sender, String fullContents, IChannel channel, IMessage datas)
 	{
 		if(!this.activated)
 		{
-			BaseCommand.logCommand(sender, datas.getGuild(), fullContents);
+			BaseCommand.logCommand(sender, datas.getChannel(), fullContents);
 			Utils.sendSafeMessages(channel, sender.mention(true) + " This command is disabled, sorry !");
 			return false;
 		}
@@ -101,7 +108,7 @@ public abstract class BaseCommand
 		{
 			return false;
 		}
-		BaseCommand.logCommand(sender, datas.getGuild(), fullContents);
+		BaseCommand.logCommand(sender, datas.getChannel(), fullContents);
 		this.fullCommand = fullContents;
 		return this.execute(sender, fullContents, channel, datas);
 	}
@@ -114,7 +121,26 @@ public abstract class BaseCommand
 		String[] tmp = this.fullCommand.split(" ");
 		for(int i = 1; i < tmp.length; i++)
 		{
-			result.add(tmp[i]);
+			String t = tmp[i];
+			if(t.startsWith("\""))
+			{
+				i++;
+				while(!tmp[i].endsWith("\"") && i < tmp.length)
+				{
+					t += " ";
+					t += tmp[i];
+					i++;
+				}
+				if(tmp[i].endsWith("\""))
+				{
+					t += " " + tmp[i];
+				}
+				result.add(t.substring(1, t.length() - 1));
+			}
+			else
+			{
+				result.add(t);
+			}
 		}
 		return result;
 	}
@@ -131,10 +157,10 @@ public abstract class BaseCommand
 		return result;
 	}
 	
-	private static final void logCommand(IUser sender, IGuild guild, final String fullCmd)
+	private static final void logCommand(IUser sender, IChannel channel, final String fullCmd)
 	{
 		Logger logger = LoggerFactory.getLogger("[" + Statics.BOT_NAME + "][CommandManager]");
-		logger.info("[" + guild.getName() + "]" + sender.getName() + "#" + sender.getDiscriminator() + " used command " + fullCmd);
+		logger.info("[" + channel.getGuild().getName() + "] /" + channel.getName() + "/" + sender.getName() + "#" + sender.getDiscriminator() + " used command " + fullCmd);
 	}
 	
 	protected final void registerCommand(CommandHandler handler)

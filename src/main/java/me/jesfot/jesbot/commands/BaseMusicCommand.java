@@ -58,6 +58,13 @@ public abstract class BaseMusicCommand extends BaseCommand
 		return this.executemusic(sender, fullContents, chan, datas);
 	}
 	
+	@Override
+	@Deprecated
+	protected final void setFullCommand(String caca)
+	{
+		// Nothing here.
+	}
+	
 	public final boolean fake_command(IUser sender, String fullContents, IMessage message, IVoiceChannel channel)
 	{
 		if(channel == null)
@@ -70,6 +77,7 @@ public abstract class BaseMusicCommand extends BaseCommand
 			Utils.sendSafeMessages(message.getChannel(), "You cannot control music by private messages !");
 			return false;
 		}
+		super.setFullCommand(fullContents);
 		return this.executemusic(sender, fullContents, channel, message);
 	}
 	

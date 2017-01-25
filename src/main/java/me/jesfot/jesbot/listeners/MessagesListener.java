@@ -22,7 +22,10 @@ public class MessagesListener
 	@EventSubscriber
 	public void onMessageSend(MessageSendEvent event)
 	{
-		// Nothing here.
+		if(this.myBot.getCommandHandler().isCommand(event.getMessage().getContent()))
+		{
+			this.myBot.getCommandHandler().execute(event.getMessage());
+		}
 	}
 	
 	@EventSubscriber

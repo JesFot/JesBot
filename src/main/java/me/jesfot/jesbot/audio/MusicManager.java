@@ -6,21 +6,27 @@ import java.net.URL;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import me.jesfot.jesbot.JesBot;
 import net.dv8tion.d4j.player.MusicPlayer;
+import net.dv8tion.jda.player.hooks.PlayerEventListener;
+import net.dv8tion.jda.player.hooks.events.FinishEvent;
+import net.dv8tion.jda.player.hooks.events.PlayerEvent;
+import net.dv8tion.jda.player.source.AudioInfo;
+import net.dv8tion.jda.player.source.AudioSource;
 import net.dv8tion.jda.player.source.LocalSource;
 import net.dv8tion.jda.player.source.RemoteSource;
 import sx.blah.discord.handle.audio.IAudioProvider;
 import sx.blah.discord.handle.obj.IGuild;
 
-public class MusicManager
+public class MusicManager implements PlayerEventListener
 {
 	private MusicPlayer player;
-	//private AudioPlayer audioPlayer;
+	private final String gid;
 	
 	public MusicManager(IGuild guild, final float default_volume)
 	{
+		this.gid = guild.getID();
 		IAudioProvider provider = guild.getAudioManager().getAudioProvider();
-		//this.audioPlayer = AudioPlayer.getAudioPlayerForGuild(guild);
 		if(!(provider instanceof MusicPlayer))
 		{
 			this.player = new MusicPlayer();
@@ -31,12 +37,15 @@ public class MusicManager
 		{
 			this.player = (MusicPlayer)provider;
 		}
+		if(!this.player.getListeners().contains(this))
+		{
+			this.player.addEventListener(this);
+		}
 	}
 	
 	public void addMusic(File file) throws UnsupportedAudioFileException, IOException
 	{
 		this.player.getAudioQueue().add(new LocalSource(file));
-		//this.audioPlayer.queue(file);
 	}
 	
 	public void addMusics(File...files) throws UnsupportedAudioFileException, IOException
@@ -44,14 +53,12 @@ public class MusicManager
 		for(File file : files)
 		{
 			this.player.getAudioQueue().add(new LocalSource(file));
-			//this.audioPlayer.queue(file);
 		}
 	}
 	
 	public void addMusic(URL url) throws UnsupportedAudioFileException, IOException
 	{
 		this.player.getAudioQueue().add(new RemoteSource(url.toString()));
-		//this.audioPlayer.queue(url);
 	}
 	
 	public void addMusic(RemoteSource source)
@@ -137,13 +144,75 @@ public class MusicManager
 		return this.player.isStopped();
 	}
 	
+	public boolean isPlaying()
+	{
+		return this.player.isPlaying();
+	}
+	
 	public boolean emptyList()
 	{
 		return this.player.getAudioQueue().isEmpty();
+	}
+	
+	public int getSize()
+	{
+		return this.player.getAudioQueue().size();
+	}
+	
+	public AudioSource getTrackAt(int index)
+	{
+		return this.player.getAudioQueue().get(index);
+	}
+	
+	public AudioSource getCurrent()
+	{
+		return this.player.getCurrentAudioSource();
+	}
+	
+	public String getTime()
+	{
+		return this.player.getCurrentTimestamp().getFullTimestamp();
 	}
 
 	public float getVolume()
 	{
 		return this.player.getVolume();
+	}
+
+	public void repeat()
+	{
+		this.player.setRepeat(!this.player.isRepeat());
+	}
+
+	public boolean getRepeat()
+	{
+		return this.player.isRepeat();
+	}
+
+	public void shuffle()
+	{
+		this.player.setShuffle(!this.player.isShuffle());
+	}
+
+	public boolean getShuffle()
+	{
+		return this.player.isShuffle();
+	}
+
+	public AudioInfo removeMusic(int index)
+	{
+		if(index < 0 || index >= this.getSize())
+		{
+			return null;
+		}
+		return this.player.getAudioQueue().remove(index).getInfo();
+	}
+	
+	public void onEvent(PlayerEvent event)
+	{
+		if(event instanceof FinishEvent)
+		{
+			JesBot.getInstance().leaveCh(JesBot.getInstance().getClient().getGuildByID(this.gid));
+		}
 	}
 }

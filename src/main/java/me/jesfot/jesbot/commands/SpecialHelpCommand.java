@@ -43,6 +43,7 @@ public class SpecialHelpCommand extends BaseCommand
 				}
 			}
 			msg += "You can also do '//help format' to get help about formats\n";
+			msg += "Or '//help <command>' to get more help about a specific command\n";
 			msg += "```\n";
 			Utils.sendSafeMessages(channel, msg);
 			Utils.deleteSafeMessages(datas);
