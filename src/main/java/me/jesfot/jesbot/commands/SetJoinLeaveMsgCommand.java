@@ -1,12 +1,11 @@
 package me.jesfot.jesbot.commands;
 
+import me.jesfot.jesbot.JesBot;
+import me.jesfot.jesbot.utils.Utils;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
-
-import me.jesfot.jesbot.JesBot;
-import me.jesfot.jesbot.utils.Utils;
 
 public class SetJoinLeaveMsgCommand extends BaseCommand
 {
@@ -32,14 +31,14 @@ public class SetJoinLeaveMsgCommand extends BaseCommand
 				String act = this.getArguments().get(0);
 				if(act.equalsIgnoreCase("join"))
 				{
-					String value = this.compileFrom(2);
+					String value = this.compileFrom(1);
 					Utils.sendSafeMessages(channel, sender.mention() + " Setted join message to '" + value + "'.");
 					this.bot.getConfig().setProperty("channel.message.join." + servID, value);
 					Utils.deleteSafeMessages(datas);
 				}
 				else if(act.equalsIgnoreCase("leave"))
 				{
-					String value = this.compileFrom(2);
+					String value = this.compileFrom(1);
 					Utils.sendSafeMessages(channel, sender.mention() + " Setted leave message to '" + value + "'.");
 					this.bot.getConfig().setProperty("channel.message.leave." + servID, value);
 					Utils.deleteSafeMessages(datas);

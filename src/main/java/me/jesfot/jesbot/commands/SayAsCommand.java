@@ -17,14 +17,14 @@ public class SayAsCommand extends BaseCommand
 	}
 	
 	@Override
-	public boolean execute(IUser sender, String fullContents, IChannel channel, IMessage datas)
+	public boolean execute(IUser sender, String fullContents, IChannel channel, IMessage datas) throws CommandError
 	{
 		if(this.getArguments().size() <= 1)
 		{
 			return false;
 		}
 		String chan = this.getArguments().get(0);
-		String msg = this.compileFrom(2);
+		String msg = this.compileFrom(1);
 		IChannel dest = Utils.getChannelAnyWay(datas.getGuild(), chan);
 		if(chan.equalsIgnoreCase("none"))
 		{
@@ -32,7 +32,7 @@ public class SayAsCommand extends BaseCommand
 		}
 		if(dest == null)
 		{
-			return false;
+			throw new CommandError("Channel \"" + chan + "\" does not exists", this);
 		}
 		Utils.sendSafeMessages(dest, msg);
 		Utils.deleteSafeMessages(datas);

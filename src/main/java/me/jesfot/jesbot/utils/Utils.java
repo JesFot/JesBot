@@ -80,7 +80,7 @@ public class Utils
 		}
 		for(String id : Statics.AUTHORS_IDS)
 		{
-			if(user.getID().equals(id))
+			if(user.getStringID().equals(id))
 			{
 				return true;
 			}
@@ -94,6 +94,10 @@ public class Utils
 		{
 			call = call.substring(2, call.length() - 1);
 		}
+		if (call.startsWith("!"))
+		{
+			call = call.substring(1);
+		}
 		if(guild.getUserByID(call) != null)
 		{
 			return guild.getUserByID(call);
@@ -104,6 +108,19 @@ public class Utils
 			return null;
 		}
 		return results.get(0);
+	}
+	
+	public static String formatUser(IUser user)
+	{
+		String result = "";
+		if (user == null)
+		{
+			result = "(null)";
+			return result;
+		}
+		result += user.getName() + "#"  + user.getDiscriminator();
+		result += "{" + user.getPresence().toString() + "}";
+		return result;
 	}
 	
 	public static boolean hasPermissionSomewhere(IUser user, IChannel channel, Permissions permission)
@@ -154,7 +171,7 @@ public class Utils
 		}
 		catch(MissingPermissionsException e)
 		{
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 			return null;
 		}
 		catch(RateLimitException e)
@@ -177,7 +194,7 @@ public class Utils
 		}
 		catch(MissingPermissionsException e)
 		{
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 			return null;
 		}
 		catch(RateLimitException e)
@@ -204,7 +221,7 @@ public class Utils
 		}
 		catch(MissingPermissionsException e)
 		{
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 			return 1;
 		}
 		catch(RateLimitException e)

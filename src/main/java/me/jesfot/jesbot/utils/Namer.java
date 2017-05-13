@@ -1,10 +1,10 @@
 package me.jesfot.jesbot.utils;
 
-import sx.blah.discord.handle.obj.Presences;
+import sx.blah.discord.handle.obj.StatusType;
 
 public class Namer
 {
-	public static String presence(Presences pre)
+	public static String presence(StatusType pre)
 	{
 		switch(pre)
 		{
@@ -18,6 +18,8 @@ public class Namer
 				return "Online";
 			case STREAMING:
 				return "Streaming";
+			case UNKNOWN:
+				return "Unknown";
 		}
 		return pre.name();
 	}

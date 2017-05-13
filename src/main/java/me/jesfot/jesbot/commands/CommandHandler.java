@@ -49,6 +49,10 @@ public class CommandHandler
 	
 	public boolean isCommand(String msg)
 	{
+		if(msg == null || msg.isEmpty())
+		{
+			return false;
+		}
 		if(msg.startsWith(Statics.COMMAND_DESIGNATOR) && msg.length() >= Statics.COMMAND_DESIGNATOR.length() + 1)
 		{
 			if(this.exists(this.getCommandName(msg)))

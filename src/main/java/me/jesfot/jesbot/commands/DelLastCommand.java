@@ -23,17 +23,18 @@ public class DelLastCommand extends BaseCommand
 	@Override
 	public boolean execute(IUser sender, String fullContents, IChannel channel, IMessage datas)
 	{
-		Iterator<IMessage> it = channel.getMessages().iterator();
+		Iterator<IMessage> it = channel.getMessageHistory().iterator();
 		while(it.hasNext())
 		{
 			IMessage msg = it.next();
 			try
 			{
-				if(msg.getAuthor().getID().equals(msg.getClient().getApplicationClientID()))
+				if(msg.getAuthor().getStringID().equals(msg.getClient().getApplicationClientID()))
 				{
-					if(msg.getMentions().get(0).equals(sender))
+					if(!msg.getMentions().isEmpty() && msg.getMentions().get(0).equals(sender))
 					{
 						msg.delete();
+						Utils.deleteSafeMessages(datas);
 						break;
 					}
 				}
@@ -41,17 +42,19 @@ public class DelLastCommand extends BaseCommand
 			catch(DiscordException e)
 			{
 				e.printStackTrace();
+				return false;
 			}
 			catch(MissingPermissionsException e)
 			{
 				e.printStackTrace();
+				return false;
 			}
 			catch(RateLimitException e)
 			{
 				e.printStackTrace();
+				return false;
 			}
 		}
-		Utils.deleteSafeMessages(datas);
-		return false;
+		return true;
 	}
 }

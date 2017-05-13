@@ -6,6 +6,7 @@ import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.IVoiceChannel;
+import sx.blah.discord.handle.obj.IVoiceState;
 import sx.blah.discord.handle.obj.Permissions;
 
 public abstract class BaseMusicCommand extends BaseCommand
@@ -28,7 +29,7 @@ public abstract class BaseMusicCommand extends BaseCommand
 	}
 	
 	@Override
-	public final boolean execute(IUser sender, String fullContents, IChannel channel, IMessage datas)
+	public final boolean execute(IUser sender, String fullContents, IChannel channel, IMessage datas) throws CommandError
 	{
 		if(channel.isPrivate())
 		{
@@ -37,9 +38,10 @@ public abstract class BaseMusicCommand extends BaseCommand
 		}
 		IGuild guild = datas.getGuild();
 		IVoiceChannel chan = null;
-		for(IVoiceChannel chnnel : sender.getConnectedVoiceChannels())
+		for(IVoiceState state : sender.getVoiceStatesLong().values())
 		{
-			if(chnnel.getGuild().getID().equals(guild.getID()))
+			IVoiceChannel chnnel = state.getChannel();
+			if(chnnel.getGuild().getStringID().equals(guild.getStringID()))
 			{
 				if(chnnel.getModifiedPermissions(guild.getClient().getOurUser()).contains(Permissions.VOICE_SPEAK))
 				{
@@ -65,7 +67,7 @@ public abstract class BaseMusicCommand extends BaseCommand
 		// Nothing here.
 	}
 	
-	public final boolean fake_command(IUser sender, String fullContents, IMessage message, IVoiceChannel channel)
+	public final boolean fake_command(IUser sender, String fullContents, IMessage message, IVoiceChannel channel) throws CommandError
 	{
 		if(channel == null)
 		{
@@ -81,5 +83,5 @@ public abstract class BaseMusicCommand extends BaseCommand
 		return this.executemusic(sender, fullContents, channel, message);
 	}
 	
-	public abstract boolean executemusic(IUser sender, String fullContents, IVoiceChannel channel, IMessage datas);
+	public abstract boolean executemusic(IUser sender, String fullContents, IVoiceChannel channel, IMessage datas) throws CommandError;
 }

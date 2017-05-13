@@ -21,7 +21,7 @@ public class FakeMusicCommand extends BaseCommand
 	}
 	
 	@Override
-	public boolean execute(IUser sender, String fullContents, IChannel channel, IMessage datas)
+	public boolean execute(IUser sender, String fullContents, IChannel channel, IMessage datas) throws CommandError
 	{
 		if(this.getArguments().size() < 2)
 		{
@@ -50,6 +50,6 @@ public class FakeMusicCommand extends BaseCommand
 			Utils.sendSafeMessages(channel, sender.mention(true) + " Command not found.");
 			return false;
 		}
-		return cmd.fake_command(sender, this.compileFrom(2), datas, result);
+		return cmd.fake_command(sender, this.compileFrom(1), datas, result);
 	}
 }

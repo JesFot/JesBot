@@ -2,11 +2,11 @@ package me.jesfot.jesbot.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import me.jesfot.jesbot.JesBot;
 import me.jesfot.jesbot.Statics;
+import me.jesfot.jesbot.utils.MyLogger;
 import me.jesfot.jesbot.utils.Utils;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -41,6 +41,11 @@ public abstract class BaseCommand
 	protected final void disable()
 	{
 		this.activated = false;
+	}
+	
+	final void setEnable(final boolean enable)
+	{
+		this.activated = enable;
 	}
 	
 	protected final void setAllowedForOwner(boolean value)
@@ -108,12 +113,34 @@ public abstract class BaseCommand
 		{
 			return false;
 		}
-		BaseCommand.logCommand(sender, datas.getChannel(), fullContents);
+		//BaseCommand.logCommand(sender, datas.getChannel(), fullContents);
 		this.fullCommand = fullContents;
-		return this.execute(sender, fullContents, channel, datas);
+		try
+		{
+			boolean res = this.execute(sender, fullContents, channel, datas);
+			if(res)
+			{
+				BaseCommand.logCommand(sender, datas.getChannel(), "[Success]" + fullContents);
+			}
+			else
+			{
+				BaseCommand.logCommand(sender, datas.getChannel(), "[Failure]" + fullContents);
+			}
+			return res;
+		}
+		catch (CommandError error)
+		{
+			BaseCommand.logCommand(sender, datas.getChannel(), "[Failure]" + fullContents);
+			BaseCommand.logCommand(sender, datas.getChannel(), "[Failure reason : " + error.getMessage() + "]");
+			if (Boolean.parseBoolean(JesBot.getInstance().getConfig().getProps().getProperty("sendreason." + channel.getGuild().getStringID(), Boolean.TRUE.toString())))
+			{
+				Utils.sendSafeMessages(channel, sender.mention(true) + " Error : \"``" + error.getMessage() + "\"``");
+			}
+		}
+		return false;
 	}
 	
-	public abstract boolean execute(IUser sender, String fullContents, IChannel channel, IMessage datas);
+	public abstract boolean execute(IUser sender, String fullContents, IChannel channel, IMessage datas) throws CommandError;
 	
 	protected final List<String> getArguments()
 	{
@@ -148,7 +175,7 @@ public abstract class BaseCommand
 	protected final String compileFrom(int index)
 	{
 		String result;
-		String[] tmp = this.fullCommand.split(" ");
+		String[] tmp = this.getArguments().toArray(new String[]{});
 		result = tmp[index];
 		for(int i = (index + 1); i < tmp.length; i++)
 		{
@@ -159,8 +186,8 @@ public abstract class BaseCommand
 	
 	private static final void logCommand(IUser sender, IChannel channel, final String fullCmd)
 	{
-		Logger logger = LoggerFactory.getLogger("[" + Statics.BOT_NAME + "][CommandManager]");
-		logger.info("[" + channel.getGuild().getName() + "] /" + channel.getName() + "/" + sender.getName() + "#" + sender.getDiscriminator() + " used command " + fullCmd);
+		MyLogger logger = MyLogger.getLogger(Statics.BOT_NAME, "CommandManager");
+		logger.log(Level.INFO, "[" + channel.getGuild().getName() + "] /" + channel.getName() + "/ " + sender.getName() + "#" + sender.getDiscriminator() + " used command " + fullCmd);
 	}
 	
 	protected final void registerCommand(CommandHandler handler)

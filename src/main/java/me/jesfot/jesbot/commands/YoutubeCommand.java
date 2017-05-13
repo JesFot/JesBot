@@ -22,12 +22,12 @@ public class YoutubeCommand extends BaseCommand
 	}
 	
 	@Override
-	public boolean execute(IUser sender, String fullContents, IChannel channel, IMessage datas)
+	public boolean execute(IUser sender, String fullContents, IChannel channel, IMessage datas) throws CommandError
 	{
 		int argLength = this.getArguments().size();
 		if(argLength < 1)
 		{
-			return false;
+			throw new CommandError("Not enought arguments", this);
 		}
 		IMessage resp = Utils.sendSafeMessages(channel, sender.mention(true) + " Searching a video for you....");
 		channel.setTypingStatus(true);
@@ -41,21 +41,21 @@ public class YoutubeCommand extends BaseCommand
 			if(this.getArguments().get(2).equalsIgnoreCase("show") && argLength >= 4)
 			{
 				show = true;
-				search_link = this.compileFrom(4);
+				search_link = this.compileFrom(3);
 			}
 			else
 			{
-				search_link = this.compileFrom(3);
+				search_link = this.compileFrom(2);
 			}
 		}
 		else if(this.getArguments().get(0).equalsIgnoreCase("show") && argLength >= 2)
 		{
 			show = true;
-			search_link = this.compileFrom(2);
+			search_link = this.compileFrom(1);
 		}
 		else
 		{
-			search_link = this.compileFrom(1);
+			search_link = this.compileFrom(0);
 		}
 		List<Video> results = Search.search(search_link, max);
 		if(results == null)

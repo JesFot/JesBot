@@ -1,14 +1,27 @@
 package me.jesfot.jesbot;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+import me.jesfot.jesbot.ai.MainAI;
 import me.jesfot.jesbot.audio.MusicManager;
+import me.jesfot.jesbot.commands.AICommand;
 import me.jesfot.jesbot.commands.CommandHandler;
 import me.jesfot.jesbot.commands.DelLastCommand;
+import me.jesfot.jesbot.commands.EndPollCommand;
 import me.jesfot.jesbot.commands.FakeMusicCommand;
+import me.jesfot.jesbot.commands.PollCommands;
 import me.jesfot.jesbot.commands.ReloadCommand;
+import me.jesfot.jesbot.commands.ReportCommand;
+import me.jesfot.jesbot.commands.ReportsCommand;
+import me.jesfot.jesbot.commands.RuCommand;
 import me.jesfot.jesbot.commands.SayAsCommand;
 import me.jesfot.jesbot.commands.SetDefaultChannelCommand;
 import me.jesfot.jesbot.commands.SetJoinLeaveMsgCommand;
 import me.jesfot.jesbot.commands.SpecialHelpCommand;
+import me.jesfot.jesbot.commands.StartPollCommand;
+import me.jesfot.jesbot.commands.StatPollCommand;
 import me.jesfot.jesbot.commands.StatusCommand;
 import me.jesfot.jesbot.commands.StopCommand;
 import me.jesfot.jesbot.commands.VersionCommand;
@@ -19,10 +32,13 @@ import me.jesfot.jesbot.commands.music.PlayCommand;
 import me.jesfot.jesbot.commands.music.PlaylistCommand;
 import me.jesfot.jesbot.commands.music.VolumeCommand;
 import me.jesfot.jesbot.config.Configuration;
+import me.jesfot.jesbot.listeners.BotConnectionsListener;
 import me.jesfot.jesbot.listeners.BotReadyListener;
 import me.jesfot.jesbot.listeners.MessagesListener;
 import me.jesfot.jesbot.listeners.ReloadListener;
 import me.jesfot.jesbot.listeners.UserListener;
+import me.jesfot.jesbot.polls.Poll;
+import me.jesfot.jesbot.reports.ReportManager;
 import me.jesfot.jesbot.utils.Utils;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
@@ -38,7 +54,13 @@ public class JesBot
 	private CommandHandler commands;
 	private Configuration configMain;
 	
+	private MainAI artIntel;
+	
+	private ReportManager reports;
+	
 	private static JesBot instance;
+	
+	public Map<String, Map<String, Poll>> polls;
 	
 	public void init()
 	{
@@ -64,13 +86,22 @@ public class JesBot
 			de.printStackTrace();
 		}
 		
+		this.polls = new HashMap<String, Map<String, Poll>>();
+		
 		JesBot.instance = this;
+		
+		this.artIntel = new MainAI(this);
+		
+		this.reports = new ReportManager(new File("datas"), "reports");
+		
+		this.reports.readConfig();
 		
 		this.commands = new CommandHandler();
 		
 		this.reloadCmd();
 		
 		EventDispatcher dispacher = this.client.getDispatcher();
+		dispacher.registerListener(new BotConnectionsListener(this));
 		dispacher.registerListener(new BotReadyListener(this));
 		dispacher.registerListener(new ReloadListener());
 		dispacher.registerListener(new MessagesListener(this));
@@ -121,6 +152,16 @@ public class JesBot
 		return this.configMain;
 	}
 	
+	public MainAI getBotAI()
+	{
+		return this.artIntel;
+	}
+	
+	public ReportManager getReportManager()
+	{
+		return this.reports;
+	}
+	
 	public void reloadCmd()
 	{
 		this.getCommandHandler().clear();
@@ -130,7 +171,15 @@ public class JesBot
 		//this.commands.addCommand(new YoutubeCommand());
 		this.commands.addCommand(new DelLastCommand());
 		this.commands.addCommand(new WhoIsCommand());
+		this.commands.addCommand(new ReportCommand());
 		this.commands.addCommand(new StatusCommand(this));
+		this.commands.addCommand(new AICommand(this));
+		this.commands.addCommand(new ReportsCommand(this));
+		this.commands.addCommand(new StartPollCommand(this));
+		this.commands.addCommand(new PollCommands.VoteCommand(this));
+		this.commands.addCommand(new StatPollCommand(this));
+		this.commands.addCommand(new EndPollCommand(this));
+		this.commands.addCommand(new RuCommand(this));
 		new ReloadCommand(this);
 		new StopCommand(this);
 		new SetDefaultChannelCommand(this);

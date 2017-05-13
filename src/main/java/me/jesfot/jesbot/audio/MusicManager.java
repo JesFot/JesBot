@@ -25,7 +25,7 @@ public class MusicManager implements PlayerEventListener
 	
 	public MusicManager(IGuild guild, final float default_volume)
 	{
-		this.gid = guild.getID();
+		this.gid = guild.getStringID();
 		IAudioProvider provider = guild.getAudioManager().getAudioProvider();
 		if(!(provider instanceof MusicPlayer))
 		{
@@ -58,7 +58,7 @@ public class MusicManager implements PlayerEventListener
 	
 	public void addMusic(URL url) throws UnsupportedAudioFileException, IOException
 	{
-		this.player.getAudioQueue().add(new RemoteSource(url.toString()));
+		this.player.getAudioQueue().add(new RemoteSource(url.toString(), this.gid));
 	}
 	
 	public void addMusic(RemoteSource source)

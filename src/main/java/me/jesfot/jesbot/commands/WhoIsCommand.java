@@ -20,11 +20,11 @@ public class WhoIsCommand extends BaseCommand
 	}
 	
 	@Override
-	public boolean execute(IUser sender, String fullContents, IChannel channel, IMessage datas)
+	public boolean execute(IUser sender, String fullContents, IChannel channel, IMessage datas) throws CommandError
 	{
 		if(this.getArguments().size() != 1)
 		{
-			return false;
+			throw new CommandError("Must have 1 argument", this);
 		}
 		Utils.deleteSafeMessages(datas);
 		IUser target = null;
@@ -53,18 +53,18 @@ public class WhoIsCommand extends BaseCommand
 			msg += "Discr: " + target.getDiscriminator() + "\n";
 			msg += "Display Name: " + target.getDisplayName(channel.getGuild()) + "\n";
 			msg += "Is a bot: " + target.isBot() + "\n";
-			msg += "Status: " + Namer.presence(target.getPresence()) + "\n";
-			if(target.getStatus().getStatusMessage() != null)
+			msg += "Status: " + Namer.presence(target.getPresence().getStatus()) + "\n";
+			if(target.getPresence().getPlayingText().isPresent())
 			{
-				msg += "Game: " + target.getStatus().getStatusMessage() + "\n";
+				msg += "Game: " + target.getPresence().getPlayingText() + "\n";
 			}
-			if(target.getStatus().getUrl().isPresent())
+			if(target.getPresence().getStreamingUrl().isPresent())
 			{
-				msg += "Streaming URL: " + target.getStatus().getUrl().get() + "\n";
+				msg += "Streaming URL: " + target.getPresence().getStreamingUrl().get() + "\n";
 			}
 			if(Utils.hasPermissionSomewhere(sender, channel, Permissions.MANAGE_ROLES))
 			{
-				msg += "User ID: " + target.getID() + "\n";
+				msg += "User ID: " + target.getStringID() + "\n";
 				msg += "Roles :\n";
 				for(IRole role : target.getRolesForGuild(channel.getGuild()))
 				{
@@ -80,18 +80,18 @@ public class WhoIsCommand extends BaseCommand
 			msg += "Discr: " + user.getDiscriminator() + "\n";
 			msg += "Display Name: " + user.getDisplayName(channel.getGuild()) + "\n";
 			msg += "Is a bot: " + user.isBot() + "\n";
-			msg += "Status: " + Namer.presence(user.getPresence()) + "\n";
-			if(target.getStatus().getStatusMessage() != null)
+			msg += "Status: " + Namer.presence(user.getPresence().getStatus()) + "\n";
+			if(target.getPresence().getPlayingText().isPresent())
 			{
-				msg += "Game: " + user.getStatus().getStatusMessage() + "\n";
+				msg += "Game: " + target.getPresence().getPlayingText() + "\n";
 			}
-			if(user.getStatus().getUrl().isPresent())
+			if(target.getPresence().getStreamingUrl().isPresent())
 			{
-				msg += "Streaming URL: " + user.getStatus().getUrl().get() + "\n";
+				msg += "Streaming URL: " + target.getPresence().getStreamingUrl().get() + "\n";
 			}
 			if(Utils.hasPermissionSomewhere(sender, channel, Permissions.MANAGE_ROLES))
 			{
-				msg += "User ID: " + user.getID() + "\n";
+				msg += "User ID: " + target.getStringID() + "\n";
 				msg += "Roles :\n";
 				for(IRole role : user.getRolesForGuild(channel.getGuild()))
 				{

@@ -3,17 +3,11 @@ package me.jesfot.jesbot.commands;
 import me.jesfot.jesbot.JesBot;
 import me.jesfot.jesbot.utils.Utils;
 import sx.blah.discord.api.internal.DiscordClientImpl;
-import sx.blah.discord.api.internal.DiscordUtils;
-import sx.blah.discord.api.internal.json.requests.PresenceUpdateRequest;
-import sx.blah.discord.handle.impl.events.PresenceUpdateEvent;
-import sx.blah.discord.handle.impl.events.StatusChangeEvent;
-import sx.blah.discord.handle.impl.obj.User;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.handle.obj.Presences;
-import sx.blah.discord.handle.obj.Status;
+import sx.blah.discord.handle.obj.StatusType;
 
 public class StatusCommand extends BaseCommand
 {
@@ -45,54 +39,53 @@ public class StatusCommand extends BaseCommand
 			String msg = sender.mention(true) + " ";
 			if(type.equalsIgnoreCase("status"))
 			{
-				msg += "I'm currently " + this.bot.getClient().getOurUser().getPresence().name();
+				msg += "I'm currently " + this.bot.getClient().getOurUser().getPresence().getStatus().name();
 			}
 			else
 			{
-				msg += "I'm playing " + this.bot.getClient().getOurUser().getStatus().getStatusMessage();
+				msg += "I'm playing " + this.bot.getClient().getOurUser().getPresence().getPlayingText().orElse("nothing");
 			}
 			Utils.sendSafeMessages(channel, msg);
 			Utils.deleteSafeMessages(datas);
 			return true;
 		}
 		DiscordClientImpl client = (DiscordClientImpl)this.bot.getClient();
-		String status = this.compileFrom(2).toLowerCase();
+		String status = this.compileFrom(1).toLowerCase();
 		if(type.equalsIgnoreCase("status"))
 		{
 			if(status.contains("online"))
 			{
-				this.updatePresence(Presences.ONLINE, client.getOurUser().getStatus(), client);
+				this.updatePresence(StatusType.ONLINE, client.getOurUser().getPresence().getStatus(), client);
 			}
 			else if(status.contains("idle"))
 			{
-				this.updatePresence(Presences.IDLE, client.getOurUser().getStatus(), client);
+				this.updatePresence(StatusType.IDLE, client.getOurUser().getPresence().getStatus(), client);
 			}
 			else if(status.contains("dnd") || status.contains("do not disturb"))
 			{
-				this.updatePresence(Presences.DND, client.getOurUser().getStatus(), client);
+				this.updatePresence(StatusType.DND, client.getOurUser().getPresence().getStatus(), client);
 			}
 			else if(status.contains("stream"))
 			{
-				this.updatePresence(Presences.STREAMING, client.getOurUser().getStatus(), client);
+				this.updatePresence(StatusType.STREAMING, client.getOurUser().getPresence().getStatus(), client);
 			}
 			else if(status.contains("offline"))
 			{
-				this.updatePresence(Presences.OFFLINE, client.getOurUser().getStatus(), client);
+				this.updatePresence(StatusType.OFFLINE, client.getOurUser().getPresence().getStatus(), client);
 			}
 		}
 		else
 		{
-			this.updatePresence(client.getOurUser().getPresence(), Status.game(status), client);
+			//this.updatePresence(client.getOurUser().getPresence(), .game(status), client);
 		}
 		Utils.deleteSafeMessages(datas);
 		return true;
 	}
 
-	private void updatePresence(Presences newprc, Status newstatus, DiscordClientImpl client)
+	private void updatePresence(StatusType newprc, StatusType newstatus, DiscordClientImpl client)
 	{
-		if (newstatus != null && !newstatus.equals(client.getOurUser().getStatus())) {
-			Status oldStatus = client.getOurUser().getStatus();
-			((User) client.getOurUser()).setStatus(newstatus);
+		/*if (newstatus != null && !newstatus.equals(client.getOurUser().getPresence().getStatus())) {
+			StatusType oldStatus = client.getOurUser().getPresence().getStatus();
 			client.getDispatcher().dispatch(new StatusChangeEvent(client.getOurUser(), oldStatus, newstatus));
 		}
 
@@ -102,6 +95,6 @@ public class StatusCommand extends BaseCommand
 			client.getDispatcher().dispatch(new PresenceUpdateEvent(client.getOurUser(), oldPresence, newprc));
 		}
 
-		client.ws.send(DiscordUtils.GSON.toJson(new PresenceUpdateRequest(newprc == Presences.IDLE ? System.currentTimeMillis() : null, newstatus)));
+		client.ws.send(DiscordUtils.GSON.toJson(new PresenceUpdateRequest(newprc == StatusType.IDLE ? System.currentTimeMillis() : null, newstatus)));*/
 	}
 }

@@ -28,6 +28,7 @@ public class StopCommand extends BaseCommand
 		{
 			Utils.sendSafeMessages(channel, Statics.BOT_NAME + " is going offline ...");
 			Utils.deleteSafeMessages(datas);
+			this.bot.getReportManager().saveConfig();
 			Utils.safeLogout(this.bot.getClient());
 			try
 			{

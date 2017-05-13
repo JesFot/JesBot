@@ -35,6 +35,13 @@ public class MessagesListener
 		{
 			this.myBot.getCommandHandler().execute(event.getMessage());
 		}
+		else if (Boolean.parseBoolean(this.myBot.getConfig().getProps().getProperty("useAIfor." + event.getMessage().getGuild().getID(), "false")))
+		{
+			if(this.myBot.getBotAI().onMessage(event.getMessage()))
+			{
+				//
+			}
+		}
 	}
 	
 	@EventSubscriber
