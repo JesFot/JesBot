@@ -30,7 +30,7 @@ public class WaitForEnd extends Thread
 			}
 			if(in.nextLine().equalsIgnoreCase("stop"))
 			{
-				this.bot.getClient().changePresence(false);
+				this.bot.getClient().idle();
 				Utils.safeLogout(this.bot.getClient());
 				cont = false;
 			}

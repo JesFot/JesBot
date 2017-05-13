@@ -10,7 +10,6 @@ import me.jesfot.jesbot.utils.Utils;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.Status;
 
 public class BotReadyListener implements IListener<ReadyEvent>
 {
@@ -28,7 +27,7 @@ public class BotReadyListener implements IListener<ReadyEvent>
 			MyLogger logger = MyLogger.getLogger(Statics.BOT_NAME, "ReadyEvent");
 			logger.log(Level.INFO, "Bot is ready on " + guild.getName());
 		}
-		event.getClient().changeStatus(Status.game(this.jb.getConfig().getProps().getProperty("bot.game", "'//help' pour des infos")));
+		event.getClient().changePlayingText(this.jb.getConfig().getProps().getProperty("bot.game", "'//help' pour des infos"));
 		if(ReloadCommand.__channel != null)
 		{
 			Utils.sendSafeMessages(event.getClient().getChannelByID(ReloadCommand.__channel), "``" + Statics.BOT_NAME + " succesfuly reloaded !!``");

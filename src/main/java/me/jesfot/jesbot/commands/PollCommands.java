@@ -38,7 +38,7 @@ public abstract class PollCommands extends BaseCommand
 			{
 				return false;
 			}
-			String pollID = this.bot.polls.entrySet().iterator().next().getKey();
+			String pollID = this.bot.polls.get(channel.getGuild().getLongID()).entrySet().iterator().next().getKey();
 			int choice = 1;
 			if(argc == 1)
 			{
@@ -49,12 +49,12 @@ public abstract class PollCommands extends BaseCommand
 				pollID = argv.get(1);
 				choice = Utils.toInt(argv.get(0), 0);
 			}
-			if(choice < 1 || !this.bot.polls.containsKey(channel.getGuild().getID()) ||
-					!this.bot.polls.get(channel.getGuild().getID()).containsKey(pollID))
+			if(choice < 1 || !this.bot.polls.containsKey(channel.getGuild().getLongID()) ||
+					!this.bot.polls.get(channel.getGuild().getLongID()).containsKey(pollID))
 			{
 				return false;
 			}
-			Poll poll = this.bot.polls.get(channel.getGuild().getID()).get(pollID);
+			Poll poll = this.bot.polls.get(channel.getGuild().getLongID()).get(pollID);
 			Result result = poll.vote(choice - 1, datas, true);
 			switch(result.getType())
 			{

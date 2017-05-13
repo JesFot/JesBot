@@ -1,11 +1,11 @@
 package me.jesfot.jesbot.listeners;
 
 import sx.blah.discord.api.events.IListener;
-import sx.blah.discord.handle.impl.events.DiscordDisconnectedEvent;
+import sx.blah.discord.handle.impl.events.shard.DisconnectedEvent;
 
-public class ReloadListener implements IListener<DiscordDisconnectedEvent>
+public class ReloadListener implements IListener<DisconnectedEvent>
 {
-	public void handle(DiscordDisconnectedEvent event)
+	public void handle(DisconnectedEvent event)
 	{
 		/*if(event.getReason().equals(Reason.LOGGED_OUT))
 		{

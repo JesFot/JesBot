@@ -30,12 +30,12 @@ public class StartPollCommand extends PollCommands
 		}
 		String argu = this.compileFrom(1);
 		List<String> responses = Arrays.asList(argu.replaceAll("; ", ";").split(";"));
-		if(!this.bot.polls.containsKey(channel.getGuild().getID()))
+		if(!this.bot.polls.containsKey(channel.getGuild().getLongID()))
 		{
-			this.bot.polls.put(channel.getGuild().getID(), new HashMap<String, Poll>());
+			this.bot.polls.put(channel.getGuild().getLongID(), new HashMap<String, Poll>());
 		}
-		String pollID = Integer.toString(this.bot.polls.get(channel.getGuild().getID()).size() + 1);
-		while(this.bot.polls.get(channel.getGuild().getID()).containsKey(pollID))
+		String pollID = Integer.toString(this.bot.polls.get(channel.getGuild().getLongID()).size() + 1);
+		while(this.bot.polls.get(channel.getGuild().getLongID()).containsKey(pollID))
 		{
 			pollID = Integer.toString(Utils.toInt(pollID, this.bot.polls.size() + 1) + 1);
 		}
@@ -45,7 +45,7 @@ public class StartPollCommand extends PollCommands
 		{
 			poll.newAnswer(str);
 		}
-		this.bot.polls.get(channel.getGuild().getID()).put(pollID, poll);
+		this.bot.polls.get(channel.getGuild().getLongID()).put(pollID, poll);
 		ProgressBar pb = new ProgressBar('[', '█', ' ', ']', 25);
 		String msg = sender.mention(true);
 		msg += " Successfully created poll with id " + pollID + ". Use ``//vote <choice> " + pollID + "`` to vote. Use ``//statpoll " + pollID + "`` to view the status of the poll.\n";

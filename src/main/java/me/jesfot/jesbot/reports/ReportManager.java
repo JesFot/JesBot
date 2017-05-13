@@ -227,12 +227,12 @@ public class ReportManager
 	
 	public HashMap<String, Report> getReportsForGuild(IGuild guild)
 	{
-		return this.reports.get(guild.getID());
+		return this.reports.get(guild.getStringID());
 	}
 	
 	public Report getReport(IGuild guild, String id)
 	{
-		if (!this.reports.containsKey(guild.getID()))
+		if (!this.reports.containsKey(guild.getStringID()))
 		{
 			return null;
 		}
@@ -241,19 +241,19 @@ public class ReportManager
 	
 	public void remove(IGuild guild, String id)
 	{
-		if (!this.reports.containsKey(guild.getID()))
+		if (!this.reports.containsKey(guild.getStringID()))
 		{
 			return;
 		}
-		Report rep = this.reports.get(guild.getID()).remove(id);
+		Report rep = this.reports.get(guild.getStringID()).remove(id);
 		rep.setStatus(Status.CANCELED);
 	}
 
 	public void addReport(IGuild guild, String id, Report report)
 	{
-		if (!this.reports.containsKey(guild.getID()))
+		if (!this.reports.containsKey(guild.getStringID()))
 		{
-			this.reports.put(guild.getID(), new HashMap<String, Report>());
+			this.reports.put(guild.getStringID(), new HashMap<String, Report>());
 		}
 		this.getReportsForGuild(guild).put(id, report);
 	}

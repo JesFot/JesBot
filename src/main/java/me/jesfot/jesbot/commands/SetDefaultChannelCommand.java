@@ -1,12 +1,11 @@
 package me.jesfot.jesbot.commands;
 
+import me.jesfot.jesbot.JesBot;
+import me.jesfot.jesbot.utils.Utils;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
-
-import me.jesfot.jesbot.JesBot;
-import me.jesfot.jesbot.utils.Utils;
 
 public class SetDefaultChannelCommand extends BaseCommand
 {
@@ -29,12 +28,12 @@ public class SetDefaultChannelCommand extends BaseCommand
 			if(this.getArguments().size() == 1)
 			{
 				Utils.sendSafeMessages(channel, sender.mention(true) + " Setted the channel " + this.getArguments().get(0) + " as default one.");
-				this.bot.getConfig().setProperty("channel.default." + datas.getGuild().getID(), datas.getGuild().getChannelsByName(this.getArguments().get(0)).get(0).getID());
+				this.bot.getConfig().setProperty("channel.default." + datas.getGuild().getStringID(), datas.getGuild().getChannelsByName(this.getArguments().get(0)).get(0).getStringID());
 			}
 			else
 			{
 				Utils.sendSafeMessages(channel, sender.mention(true) + " Setted this channel as default one.");
-				this.bot.getConfig().setProperty("channel.default." + datas.getGuild().getID(), channel.getID());
+				this.bot.getConfig().setProperty("channel.default." + datas.getGuild().getStringID(), channel.getStringID());
 			}
 			Utils.deleteSafeMessages(datas);
 		}

@@ -27,7 +27,7 @@ public class SetJoinLeaveMsgCommand extends BaseCommand
 		{
 			if(this.getArguments().size() >= 2)
 			{
-				String servID = datas.getGuild().getID();
+				String servID = datas.getGuild().getStringID();
 				String act = this.getArguments().get(0);
 				if(act.equalsIgnoreCase("join"))
 				{

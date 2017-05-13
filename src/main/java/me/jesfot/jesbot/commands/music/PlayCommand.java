@@ -37,7 +37,7 @@ public class PlayCommand extends BaseMusicCommand
 		}
 		try
 		{
-			JesBot.getInstance().connectCh(channel.getGuild(), channel.getID());
+			JesBot.getInstance().connectCh(channel.getGuild(), channel.getLongID());
 		}
 		catch (MissingPermissionsException e1)
 		{

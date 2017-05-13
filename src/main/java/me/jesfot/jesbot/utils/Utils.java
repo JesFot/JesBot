@@ -47,7 +47,7 @@ public class Utils
 		if(call.startsWith("<#") && call.endsWith(">"))
 		{
 			call = call.substring(2, call.length() - 1);
-			return guild.getChannelByID(call);
+			return guild.getChannelByID(Long.parseUnsignedLong(call));
 		}
 		List<IChannel> results = guild.getChannelsByName(call);
 		if(results.isEmpty())
@@ -62,7 +62,7 @@ public class Utils
 		if(call.startsWith("<#") && call.endsWith(">"))
 		{
 			call = call.substring(2, call.length() - 1);
-			return guild.getVoiceChannelByID(call);
+			return guild.getVoiceChannelByID(Long.parseUnsignedLong(call));
 		}
 		List<IVoiceChannel> results = guild.getVoiceChannelsByName(call);
 		if(results.isEmpty())
@@ -78,9 +78,9 @@ public class Utils
 		{
 			return false;
 		}
-		for(String id : Statics.AUTHORS_IDS)
+		for(Long id : Statics.AUTHORS_IDS)
 		{
-			if(user.getStringID().equals(id))
+			if(user.getLongID() == id.longValue())
 			{
 				return true;
 			}
@@ -98,9 +98,9 @@ public class Utils
 		{
 			call = call.substring(1);
 		}
-		if(guild.getUserByID(call) != null)
+		if(guild.getUserByID(Long.parseUnsignedLong(call)) != null)
 		{
-			return guild.getUserByID(call);
+			return guild.getUserByID(Long.parseUnsignedLong(call));
 		}
 		List<IUser> results = guild.getUsersByName(call);
 		if(results.isEmpty())

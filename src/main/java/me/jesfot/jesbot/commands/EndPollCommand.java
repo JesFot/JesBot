@@ -22,21 +22,21 @@ public class EndPollCommand extends PollCommands
 	{
 		List<String> argv = this.getArguments();
 		int argc = argv.size();
-		if(argc != 0 && argc != 1 || !this.bot.polls.containsKey(channel.getGuild().getID()))
+		if(argc != 0 && argc != 1 || !this.bot.polls.containsKey(channel.getGuild().getLongID()))
 		{
 			return false;
 		}
-		String pollID = this.bot.polls.entrySet().iterator().next().getKey();
+		String pollID = this.bot.polls.get(channel.getGuild().getLongID()).entrySet().iterator().next().getKey();
 		if(argc == 1)
 		{
 			pollID = argv.get(0);
 		}
-		Poll poll = this.bot.polls.get(channel.getGuild().getID()).get(pollID);
+		Poll poll = this.bot.polls.get(channel.getGuild().getLongID()).get(pollID);
 		if(poll == null)
 		{
 			return false;
 		}
-		this.bot.polls.get(channel.getGuild().getID()).remove(pollID, poll);
+		this.bot.polls.get(channel.getGuild().getLongID()).remove(pollID, poll);
 		ProgressBar pb = new ProgressBar('[', '█', ' ', ']', 25);
 		String msg = sender.mention(true);
 		msg += " Poll id " + pollID + " concluded.\n";
@@ -52,7 +52,7 @@ public class EndPollCommand extends PollCommands
 			{
 				spc = " " + spc;
 			}
-			msg += Integer.toString(i + 1) + ") " + poll.getAt(i).getAnswer() + " - " + votes + " votes - " + pc + "% " + pb.getFor(pc) + "\n";
+			msg += Integer.toString(i + 1) + ") " + poll.getAt(i).getAnswer() + " - " + pc + "% " + pb.getFor(pc) + " - " + votes + " votes\n";
 		}
 		msg += "```\n";
 		Utils.sendSafeMessages(channel, msg);

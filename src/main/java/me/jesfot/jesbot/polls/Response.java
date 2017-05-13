@@ -12,13 +12,13 @@ public class Response
 	
 	private final AtomicInteger votes;
 	
-	private List<String> votedIDS;
+	private List<Long> votedIDS;
 	
 	public Response(final String p_id)
 	{
 		this.id = p_id;
 		this.text = null;
-		this.votedIDS = new ArrayList<String>();
+		this.votedIDS = new ArrayList<Long>();
 		this.votes = new AtomicInteger(0);
 	}
 	
@@ -28,7 +28,7 @@ public class Response
 		return this;
 	}
 	
-	public List<String> getVoters()
+	public List<Long> getVoters()
 	{
 		return this.votedIDS;
 	}

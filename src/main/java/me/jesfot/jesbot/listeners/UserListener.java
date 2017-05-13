@@ -4,12 +4,12 @@ import me.jesfot.jesbot.JesBot;
 import me.jesfot.jesbot.utils.Replacor;
 import me.jesfot.jesbot.utils.Utils;
 import sx.blah.discord.api.events.EventSubscriber;
-import sx.blah.discord.handle.impl.events.UserBanEvent;
-import sx.blah.discord.handle.impl.events.UserJoinEvent;
-import sx.blah.discord.handle.impl.events.UserLeaveEvent;
-import sx.blah.discord.handle.impl.events.UserPardonEvent;
-import sx.blah.discord.handle.impl.events.UserRoleUpdateEvent;
-import sx.blah.discord.handle.impl.events.UserUpdateEvent;
+import sx.blah.discord.handle.impl.events.guild.member.UserBanEvent;
+import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
+import sx.blah.discord.handle.impl.events.guild.member.UserLeaveEvent;
+import sx.blah.discord.handle.impl.events.guild.member.UserPardonEvent;
+import sx.blah.discord.handle.impl.events.guild.member.UserRoleUpdateEvent;
+import sx.blah.discord.handle.impl.events.user.UserUpdateEvent;
 import sx.blah.discord.handle.obj.IChannel;
 
 public class UserListener
@@ -25,9 +25,9 @@ public class UserListener
 	public void onUserJoin(UserJoinEvent event)
 	{
 		IChannel main;
-		String ch = this.bot.getConfig().getProps().getProperty("channel.default." + event.getGuild().getID());
-		main = event.getGuild().getChannelByID(ch);
-		String msg = this.bot.getConfig().getProps().getProperty("channel.message.join." + event.getGuild().getID());
+		String ch = this.bot.getConfig().getProps().getProperty("channel.default." + event.getGuild().getStringID());
+		main = event.getGuild().getChannelByID(Long.parseUnsignedLong(ch));
+		String msg = this.bot.getConfig().getProps().getProperty("channel.message.join." + event.getGuild().getStringID());
 		if(msg == null)
 		{
 			msg = "Welcome <mention> on this server !";
@@ -51,9 +51,9 @@ public class UserListener
 	public void onUserLeave(UserLeaveEvent event)
 	{
 		IChannel main;
-		String ch = this.bot.getConfig().getProps().getProperty("channel.default." + event.getGuild().getID());
-		main = event.getGuild().getChannelByID(ch);
-		String msg = this.bot.getConfig().getProps().getProperty("channel.message.leave." + event.getGuild().getID());
+		String ch = this.bot.getConfig().getProps().getProperty("channel.default." + event.getGuild().getStringID());
+		main = event.getGuild().getChannelByID(Long.parseUnsignedLong(ch));
+		String msg = this.bot.getConfig().getProps().getProperty("channel.message.leave." + event.getGuild().getStringID());
 		if(msg == null)
 		{
 			msg = "Bye bye <user> !";

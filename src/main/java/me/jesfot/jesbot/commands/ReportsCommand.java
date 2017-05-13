@@ -58,8 +58,8 @@ public class ReportsCommand extends BaseCommand
 				for (Entry<String, Report> entry : allReports.entrySet())
 				{
 					Report value = entry.getValue();
-					IUser v_sender = channel.getGuild().getUserByID(value.getSenderID());
-					IUser v_target = channel.getGuild().getUserByID(value.getTargetID());
+					IUser v_sender = channel.getGuild().getUserByID(Long.parseUnsignedLong(value.getSenderID()));
+					IUser v_target = channel.getGuild().getUserByID(Long.parseUnsignedLong(value.getTargetID()));
 					msg += "id: \"" + entry.getKey() + "\" [" + value.getName() + "] ";
 					msg += Utils.formatUser(v_sender) + " reported " + Utils.formatUser(v_target) + "\n";
 				}
@@ -75,12 +75,13 @@ public class ReportsCommand extends BaseCommand
 				}
 				else
 				{
-					IUser v_sender = channel.getGuild().getUserByID(rep.getSenderID());
-					IUser v_target = channel.getGuild().getUserByID(rep.getTargetID());
+					IUser v_sender = channel.getGuild().getUserByID(Long.parseUnsignedLong(rep.getSenderID()));
+					IUser v_target = channel.getGuild().getUserByID(Long.parseUnsignedLong(rep.getTargetID()));
 					msg += "ID: " + args.get(1) + "\n  Name: " + rep.getName() + " [" + rep.getStatus().toString() + "]\n";
 					msg += "    " + Utils.formatUser(v_sender) + " reported " + Utils.formatUser(v_target) + "\n";
-					IMessage message = channel.getGuild().getMessageByID(rep.getMessageID());
-					msg += " Channel / Message IDs: " + channel.getGuild().getChannelByID(rep.getChannelID()).mention() + " / " + rep.getMessageID() + "\n";
+					IMessage message = channel.getGuild().getMessageByID(Long.parseUnsignedLong(rep.getMessageID()));
+					msg += " Channel / Message IDs: " + channel.getGuild().getChannelByID(Long.parseUnsignedLong(rep.getChannelID())).mention()
+							+ " / " + rep.getMessageID() + "\n";
 					if (message == null)
 					{
 						msg += " [Message deleted or not found]\n";

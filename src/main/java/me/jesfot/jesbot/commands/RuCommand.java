@@ -27,14 +27,14 @@ public class RuCommand extends BaseCommand
 	@Override
 	public boolean execute(IUser sender, String fullContents, IChannel channel, IMessage datas) throws CommandError
 	{
-		if (!Boolean.parseBoolean(this.jesbot.getConfig().getProps().getProperty("PersonnalsRolesFor." + channel.getGuild().getID(), Boolean.toString(true))))
+		if (!Boolean.parseBoolean(this.jesbot.getConfig().getProps().getProperty("PersonnalsRolesFor." + channel.getGuild().getStringID(), Boolean.toString(true))))
 		{
 			throw new CommandError("RU not allowed on this server", this);
 		}
 		List<String> args = this.getArguments();
 		if (args.isEmpty())
 		{
-			this.jesbot.getConfig().setProperty("PersonnalsRolesFor." + channel.getGuild().getID(), Boolean.TRUE.toString());
+			this.jesbot.getConfig().setProperty("PersonnalsRolesFor." + channel.getGuild().getStringID(), Boolean.TRUE.toString());
 			return false;
 		}
 		if (args.get(0).equalsIgnoreCase("add") && args.size() >= 2)

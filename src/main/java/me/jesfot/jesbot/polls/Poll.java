@@ -11,25 +11,25 @@ import sx.blah.discord.handle.obj.IMessage;
 public class Poll
 {
 	private final String id;
-	private final String summonerID;
-	private final String channelID;
+	private final Long summonerID;
+	private final Long channelID;
 	
 	private String question;
 	private final AtomicInteger totalVotes;
 	
 	private List<Response> answers;
 	
-	private HashMap<String, Integer> voters;
+	private HashMap<Long, Integer> voters;
 	
 	public Poll(final String p_id, final IMessage original)
 	{
 		this.id = p_id;
-		this.summonerID = original.getAuthor().getID();
-		this.channelID = original.getChannel().getID();
+		this.summonerID = original.getAuthor().getLongID();
+		this.channelID = original.getChannel().getLongID();
 		this.totalVotes = new AtomicInteger(0);
 		this.question = null;
 		this.answers = new ArrayList<Response>();
-		this.voters = new HashMap<String, Integer>();
+		this.voters = new HashMap<Long, Integer>();
 	}
 	
 	public void question(String qu)
@@ -37,12 +37,12 @@ public class Poll
 		this.question = qu;
 	}
 	
-	public String getSummonerID()
+	public Long getSummonerID()
 	{
 		return this.summonerID;
 	}
 	
-	public String getChannelID()
+	public Long getChannelID()
 	{
 		return this.channelID;
 	}
@@ -91,18 +91,18 @@ public class Poll
 	
 	public Result removeVote(IMessage original)
 	{
-		if(!this.voters.containsKey(original.getAuthor().getID()))
+		if(!this.voters.containsKey(Long.valueOf(original.getAuthor().getLongID())))
 		{
 			return new Result(-1, Result.Type.ABORTED, "No registred votes");
 		}
-		int index = this.voters.get(original.getAuthor().getID()).intValue();
-		this.voters.remove(original.getAuthor().getID());
+		int index = this.voters.get(Long.valueOf(original.getAuthor().getLongID())).intValue();
+		this.voters.remove(Long.valueOf(original.getAuthor().getLongID()));
 		Response resp = this.getAt(index);
 		if(resp == null)
 		{
 			return new Result(-1, Result.Type.ERROR, "Index out of bounds or not found");
 		}
-		resp.getVoters().remove(original.getAuthor().getID());
+		resp.getVoters().remove(Long.valueOf(original.getAuthor().getLongID()));
 		this.totalVotes.decrementAndGet();
 		return new Result(resp.removeVote(), Result.Type.REMOVED, "Removed vote");
 	}
@@ -112,13 +112,13 @@ public class Poll
 		if(index >= 0 && index < this.answers.size())
 		{
 			Result res = new Result(0, Result.Type.VOTED, "Voted");
-			if(this.voters.containsKey(original.getAuthor().getID()))
+			if(this.voters.containsKey(Long.valueOf(original.getAuthor().getLongID())))
 			{
-				int idx = this.voters.get(original.getAuthor().getID()).intValue();
+				int idx = this.voters.get(Long.valueOf(original.getAuthor().getLongID())).intValue();
 				Response old = this.getAt(idx);
 				if(old == null)
 				{
-					this.voters.remove(original.getAuthor().getID());
+					this.voters.remove(Long.valueOf(original.getAuthor().getLongID()));
 				}
 				else if(!change)
 				{
@@ -127,18 +127,18 @@ public class Poll
 				else
 				{
 					old.removeVote();
-					old.getVoters().remove(original.getAuthor().getID());
+					old.getVoters().remove(Long.valueOf(original.getAuthor().getLongID()));
 					res.setType(Result.Type.CHANGED);
 					res.setMessage("Changed vote");
 				}
 			}
-			this.voters.put(original.getAuthor().getID(), new Integer(index));
+			this.voters.put(original.getAuthor().getLongID(), new Integer(index));
 			Response selected = this.getAt(index);
-			if(selected.getVoters().contains(original.getAuthor().getID()))
+			if(selected.getVoters().contains(original.getAuthor().getLongID()))
 			{
 				return new Result(selected.getVotes(), Result.Type.ABORTED, "Nothing changed");
 			}
-			selected.getVoters().add(original.getAuthor().getID());
+			selected.getVoters().add(original.getAuthor().getLongID());
 			res.setValue(selected.vote());
 			if (res.getType() == Result.Type.VOTED)
 				this.totalVotes.incrementAndGet();

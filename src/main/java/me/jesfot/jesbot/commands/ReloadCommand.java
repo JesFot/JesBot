@@ -11,7 +11,7 @@ public class ReloadCommand extends BaseCommand
 {
 	private JesBot bot;
 	
-	public static String __channel = null;
+	public static Long __channel = null;
 	
 	public ReloadCommand(JesBot jb)
 	{

@@ -21,11 +21,11 @@ import sx.blah.discord.handle.obj.IGuild;
 public class MusicManager implements PlayerEventListener
 {
 	private MusicPlayer player;
-	private final String gid;
+	private final Long gid;
 	
 	public MusicManager(IGuild guild, final float default_volume)
 	{
-		this.gid = guild.getStringID();
+		this.gid = guild.getLongID();
 		IAudioProvider provider = guild.getAudioManager().getAudioProvider();
 		if(!(provider instanceof MusicPlayer))
 		{
@@ -58,7 +58,7 @@ public class MusicManager implements PlayerEventListener
 	
 	public void addMusic(URL url) throws UnsupportedAudioFileException, IOException
 	{
-		this.player.getAudioQueue().add(new RemoteSource(url.toString(), this.gid));
+		this.player.getAudioQueue().add(new RemoteSource(url.toString(), Long.toUnsignedString(this.gid)));
 	}
 	
 	public void addMusic(RemoteSource source)

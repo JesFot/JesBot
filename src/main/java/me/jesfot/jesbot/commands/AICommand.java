@@ -30,7 +30,7 @@ public class AICommand extends BaseCommand
 			@Override
 			public void run(IMessage source)
 			{
-				AICommand.this.jesbot.getConfig().setProperty("useAIfor." + source.getGuild().getID(), Boolean.toString(true));
+				AICommand.this.jesbot.getConfig().setProperty("useAIfor." + source.getGuild().getStringID(), Boolean.toString(true));
 				Utils.sendSafeMessages(source.getChannel(), source.getAuthor().mention(true) + " Activated bot AI");
 			}
 		});
@@ -39,7 +39,7 @@ public class AICommand extends BaseCommand
 			@Override
 			public void run(IMessage source)
 			{
-				AICommand.this.jesbot.getConfig().setProperty("useAIfor." + source.getGuild().getID(), Boolean.toString(false));
+				AICommand.this.jesbot.getConfig().setProperty("useAIfor." + source.getGuild().getStringID(), Boolean.toString(false));
 				Utils.sendSafeMessages(source.getChannel(), source.getAuthor().mention(true) + " Activated bot AI");
 			}
 		});

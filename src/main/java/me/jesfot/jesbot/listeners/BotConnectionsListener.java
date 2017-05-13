@@ -2,7 +2,7 @@ package me.jesfot.jesbot.listeners;
 
 import me.jesfot.jesbot.JesBot;
 import sx.blah.discord.api.events.EventSubscriber;
-import sx.blah.discord.handle.impl.events.DiscordDisconnectedEvent;
+import sx.blah.discord.handle.impl.events.shard.DisconnectedEvent;
 
 public class BotConnectionsListener
 {
@@ -14,7 +14,7 @@ public class BotConnectionsListener
 	}
 	
 	@EventSubscriber
-	public void onDisconnect(DiscordDisconnectedEvent event)
+	public void onDisconnect(DisconnectedEvent event)
 	{
 		this.jb.getReportManager().saveConfig();
 	}

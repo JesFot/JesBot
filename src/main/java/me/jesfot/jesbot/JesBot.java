@@ -60,7 +60,7 @@ public class JesBot
 	
 	private static JesBot instance;
 	
-	public Map<String, Map<String, Poll>> polls;
+	public Map<Long, Map<String, Poll>> polls;
 	
 	public void init()
 	{
@@ -86,7 +86,7 @@ public class JesBot
 			de.printStackTrace();
 		}
 		
-		this.polls = new HashMap<String, Map<String, Poll>>();
+		this.polls = new HashMap<Long, Map<String, Poll>>();
 		
 		JesBot.instance = this;
 		
@@ -116,7 +116,7 @@ public class JesBot
 		return JesBot.instance;
 	}
 	
-	public void connectCh(IGuild guild, String cid) throws MissingPermissionsException
+	public void connectCh(IGuild guild, long cid) throws MissingPermissionsException
 	{
 		IVoiceChannel voiceChannel = this.getClient().getVoiceChannelByID(cid);
 		new MusicManager(guild, 0.50F);

@@ -23,17 +23,17 @@ public class StatPollCommand extends PollCommands
 		List<String> argv = this.getArguments();
 		int argc = argv.size();
 		if(argc != 0 && argc != 1 
-				|| !this.bot.polls.containsKey(channel.getGuild().getID())
-				|| this.bot.polls.get(channel.getGuild().getID()).isEmpty())
+				|| !this.bot.polls.containsKey(channel.getGuild().getLongID())
+				|| this.bot.polls.get(channel.getGuild().getLongID()).isEmpty())
 		{
 			return false;
 		}
-		String pollID = this.bot.polls.get(channel.getGuild().getID()).entrySet().iterator().next().getKey();
+		String pollID = this.bot.polls.get(channel.getGuild().getLongID()).entrySet().iterator().next().getKey();
 		if(argc == 1)
 		{
 			pollID = argv.get(0);
 		}
-		Poll poll = this.bot.polls.get(channel.getGuild().getID()).get(pollID);
+		Poll poll = this.bot.polls.get(channel.getGuild().getLongID()).get(pollID);
 		if(poll == null)
 		{
 			return false;
@@ -41,7 +41,7 @@ public class StatPollCommand extends PollCommands
 		ProgressBar pb = new ProgressBar('[', '█', ' ', ']', 25);
 		IUser creator = this.bot.getClient().getUserByID(poll.getSummonerID());
 		String msg = sender.mention(true);
-		msg += " Poll started by " + creator.getDisplayName(datas.getGuild()) + " (" + creator.getID() + ").\n";
+		msg += " Poll started by " + creator.getDisplayName(datas.getGuild()) + " (" + creator.getStringID() + ").\n";
 		msg += "```\n";
 		msg += poll.getQuestion() + "\n";
 		for (int i = 0; i < poll.getAlls().size(); i++)

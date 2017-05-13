@@ -2,13 +2,14 @@ package me.jesfot.jesbot.listeners;
 
 import me.jesfot.jesbot.JesBot;
 import sx.blah.discord.api.events.EventSubscriber;
-import sx.blah.discord.handle.impl.events.MessageDeleteEvent;
-import sx.blah.discord.handle.impl.events.MessageEmbedEvent;
-import sx.blah.discord.handle.impl.events.MessagePinEvent;
-import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
-import sx.blah.discord.handle.impl.events.MessageSendEvent;
-import sx.blah.discord.handle.impl.events.MessageUnpinEvent;
-import sx.blah.discord.handle.impl.events.MessageUpdateEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageDeleteEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageEmbedEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessagePinEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageSendEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageUnpinEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageUpdateEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent;
 
 public class MessagesListener
 {
@@ -35,7 +36,7 @@ public class MessagesListener
 		{
 			this.myBot.getCommandHandler().execute(event.getMessage());
 		}
-		else if (Boolean.parseBoolean(this.myBot.getConfig().getProps().getProperty("useAIfor." + event.getMessage().getGuild().getID(), "false")))
+		else if (Boolean.parseBoolean(this.myBot.getConfig().getProps().getProperty("useAIfor." + event.getMessage().getGuild().getStringID(), "false")))
 		{
 			if(this.myBot.getBotAI().onMessage(event.getMessage()))
 			{
@@ -51,6 +52,12 @@ public class MessagesListener
 		{
 			this.myBot.getCommandHandler().execute(event.getNewMessage());
 		}
+	}
+	
+	@EventSubscriber
+	public void onMessageReaction(ReactionAddEvent event)
+	{
+		//
 	}
 	
 	@EventSubscriber

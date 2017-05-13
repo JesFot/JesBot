@@ -41,22 +41,22 @@ public class ReportCommand extends BaseCommand
 		{
 			throw new CommandError("Target is null / unfindable", this);
 		}
-		IMessage message = channel.getMessages().get(msg);
-		if (message == null || !message.getAuthor().getID().equalsIgnoreCase(player.getID()))
+		IMessage message = channel.getMessageHistory().get(msg);
+		if (message == null || message.getAuthor().getLongID() != player.getLongID())
 		{
 			throw new CommandError("Cannot get message or is not good author", this);
 		}
 		newReport = new Report();
-		newReport.setChannelID(channel.getID());
-		newReport.setMessageID(message.getID());
+		newReport.setChannelID(channel.getStringID());
+		newReport.setMessageID(message.getStringID());
 		newReport.setContent(message.getContent());
 		newReport.setDate(datas.getTimestamp().toString());
 		newReport.setName(UUID.randomUUID().toString());
 		newReport.setReason(reason);
-		newReport.setSenderID(sender.getID());
-		newReport.setTargetID(player.getID());
+		newReport.setSenderID(sender.getStringID());
+		newReport.setTargetID(player.getStringID());
 		newReport.setStatus(Status.THROWED);
-		JesBot.getInstance().getReportManager().addReport(channel.getGuild(), datas.getID(), newReport);
+		JesBot.getInstance().getReportManager().addReport(channel.getGuild(), datas.getStringID(), newReport);
 		JesBot.getInstance().getReportManager().saveConfig();
 		Utils.sendSafeMessages(channel, sender.mention(true) + " Report sended !");
 		Utils.deleteSafeMessages(datas);
