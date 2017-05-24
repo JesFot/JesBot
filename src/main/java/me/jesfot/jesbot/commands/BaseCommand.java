@@ -109,7 +109,7 @@ public abstract class BaseCommand
 			Utils.sendSafeMessages(channel, sender.mention(true) + " This command is disabled, sorry !");
 			return false;
 		}
-		if(!(Utils.isMyOwner(sender) && this.allowForOwner) && !Utils.hasPermissionSomewhere(sender, channel, this.getMinimalPermission()))
+		if(!((Utils.isMyOwner(sender) && this.allowForOwner) || Utils.hasPermissionSomewhere(sender, channel, this.getMinimalPermission())))
 		{
 			return false;
 		}

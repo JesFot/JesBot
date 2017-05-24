@@ -26,6 +26,8 @@ public class UserListener
 	{
 		IChannel main;
 		String ch = this.bot.getConfig().getProps().getProperty("channel.default." + event.getGuild().getStringID());
+		if (ch == null)
+			return;
 		main = event.getGuild().getChannelByID(Long.parseUnsignedLong(ch));
 		String msg = this.bot.getConfig().getProps().getProperty("channel.message.join." + event.getGuild().getStringID());
 		if(msg == null)
@@ -52,6 +54,8 @@ public class UserListener
 	{
 		IChannel main;
 		String ch = this.bot.getConfig().getProps().getProperty("channel.default." + event.getGuild().getStringID());
+		if (ch == null)
+			return;
 		main = event.getGuild().getChannelByID(Long.parseUnsignedLong(ch));
 		String msg = this.bot.getConfig().getProps().getProperty("channel.message.leave." + event.getGuild().getStringID());
 		if(msg == null)

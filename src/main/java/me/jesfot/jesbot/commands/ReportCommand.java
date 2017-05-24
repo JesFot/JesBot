@@ -36,15 +36,19 @@ public class ReportCommand extends BaseCommand
 		{
 			throw new CommandError("Message index is negative", this);
 		}
+		if (msg >= 1500)
+		{
+			throw new CommandError("Message index is too high", this);
+		}
 		IUser player = Utils.getUserById(channel.getGuild(), target);
 		if (player == null)
 		{
 			throw new CommandError("Target is null / unfindable", this);
 		}
-		IMessage message = channel.getMessageHistory().get(msg);
+		IMessage message = channel.getMessageHistory(msg + 1).get(msg);
 		if (message == null || message.getAuthor().getLongID() != player.getLongID())
 		{
-			throw new CommandError("Cannot get message or is not good author", this);
+			throw new CommandError("Cannot get message or is not good author" + (message == null ? " MSG_NULL" : ""), this);
 		}
 		newReport = new Report();
 		newReport.setChannelID(channel.getStringID());

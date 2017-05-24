@@ -5,6 +5,7 @@ import java.util.List;
 import me.jesfot.jesbot.Statics;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
@@ -72,6 +73,15 @@ public class Utils
 		return results.get(0);
 	}
 	
+	public static boolean isMe(IUser user, IDiscordClient client)
+	{
+		if(!user.isBot())
+		{
+			return false;
+		}
+		return (user.getLongID() == client.getOurUser().getLongID());
+	}
+	
 	public static boolean isMyOwner(IUser user)
 	{
 		if(user.isBot())
@@ -98,10 +108,15 @@ public class Utils
 		{
 			call = call.substring(1);
 		}
-		if(guild.getUserByID(Long.parseUnsignedLong(call)) != null)
+		try
 		{
-			return guild.getUserByID(Long.parseUnsignedLong(call));
+			if(guild.getUserByID(Long.parseUnsignedLong(call)) != null)
+			{
+				return guild.getUserByID(Long.parseUnsignedLong(call));
+			}
 		}
+		catch (Exception e)
+		{}
 		List<IUser> results = guild.getUsersByName(call);
 		if(results.isEmpty())
 		{
@@ -129,15 +144,7 @@ public class Utils
 		{
 			return true;
 		}
-		List<IRole> roles = user.getRolesForGuild(channel.getGuild());
-		for(IRole role : roles)
-		{
-			if(role.getPermissions().contains(permission))
-			{
-				return true;
-			}
-		}
-		return false;
+		return (channel.getModifiedPermissions(user).contains(permission));
 	}
 	
 	public static int safeLogout(IDiscordClient client)
@@ -157,6 +164,33 @@ public class Utils
 			return 2;
 		}
 		return 0;
+	}
+	
+	public static IMessage sendSafeEmbed(IChannel channel, EmbedObject message)
+	{
+		if(channel == null)
+		{
+			return null;
+		}
+		try
+		{
+			return channel.sendMessage(message);
+		}
+		catch(MissingPermissionsException e)
+		{
+			System.err.println(e.getMessage());
+			return null;
+		}
+		catch(RateLimitException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		catch(DiscordException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	public static IMessage sendSafeMessages(IChannel channel, String message)
