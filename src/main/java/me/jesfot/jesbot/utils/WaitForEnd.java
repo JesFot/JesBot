@@ -30,9 +30,13 @@ public class WaitForEnd extends Thread
 			}
 			if(in.nextLine().equalsIgnoreCase("stop"))
 			{
-				this.bot.getClient().idle();
+				this.bot.getReportManager().saveConfig();
 				Utils.safeLogout(this.bot.getClient());
 				cont = false;
+			}
+			else
+			{
+				System.out.print("$>");
 			}
 		}
 		in.close();

@@ -19,15 +19,16 @@ import sx.blah.discord.util.RateLimitException;
 
 public class Utils
 {
-	public static IDiscordClient getClient(String token, boolean login) throws DiscordException
+	public static IDiscordClient getClient(String token, boolean login, boolean deamon) throws DiscordException
 	{
-		ClientBuilder buidler = new ClientBuilder();
-		buidler.withToken(token);
+		ClientBuilder builder = new ClientBuilder();
+		builder.setDaemon(deamon);
+		builder.withToken(token);
 		if(login)
 		{
-			return buidler.login();
+			return builder.login();
 		}
-		return buidler.build();
+		return builder.build();
 	}
 	
 	public static IRole getHigherRole(List<IRole> roles)
@@ -84,6 +85,10 @@ public class Utils
 	
 	public static boolean isMyOwner(IUser user)
 	{
+		if(user == null)
+		{
+			return false;
+		}
 		if(user.isBot())
 		{
 			return false;
@@ -140,6 +145,10 @@ public class Utils
 	
 	public static boolean hasPermissionSomewhere(IUser user, IChannel channel, Permissions permission)
 	{
+		if(user == null || channel == null)
+		{
+			return true;
+		}
 		if(permission == null || channel.isPrivate())
 		{
 			return true;
@@ -245,6 +254,10 @@ public class Utils
 	
 	public static int deleteSafeMessages(IMessage message)
 	{
+		if(message == null)
+		{
+			return 0;
+		}
 		if(message.getChannel().isPrivate())
 		{
 			return 0;

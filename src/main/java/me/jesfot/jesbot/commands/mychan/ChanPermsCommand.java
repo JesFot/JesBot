@@ -131,35 +131,42 @@ public class ChanPermsCommand extends BaseCommand
 	
 	private void change_user_perm(IChannel channel, Permissions perm, IUser user, boolean to_rm)
 	{
-		EnumSet<Permissions> perms_ch = EnumSet.of(perm);
+		EnumSet<Permissions> perms_ch = channel.getModifiedPermissions(user);
 		if (!to_rm)
 		{
-			channel.overrideUserPermissions(user, perms_ch, null);
+			perms_ch.add(perm);
+			//channel.overrideUserPermissions(user, perms_ch, null);
 		}
 		else
 		{
-			channel.overrideUserPermissions(user, null, perms_ch);
+			perms_ch.remove(perm);
+			/*channel.overrideUserPermissions(user, null, perms_ch);
 			if (channel.getModifiedPermissions(user).isEmpty())
 			{
 				channel.removePermissionsOverride(user);
-			}
+			}*/
 		}
+		channel.overrideUserPermissions(user, perms_ch, null);
 	}
 	
 	private void change_role_perm(IChannel channel, Permissions perm, IRole role, boolean to_rm)
 	{
-		EnumSet<Permissions> perms_ch = EnumSet.of(perm);
+		EnumSet<Permissions> perms_ch = channel.getModifiedPermissions(role);
+		//EnumSet<Permissions> perms_ch = EnumSet.of(perm);
 		if (!to_rm)
 		{
-			channel.overrideRolePermissions(role, perms_ch, null);
+			perms_ch.add(perm);
+			//channel.overrideRolePermissions(role, perms_ch, null);
 		}
 		else
 		{
-			channel.overrideRolePermissions(role, null, perms_ch);
+			perms_ch.remove(perm);
+			/*channel.overrideRolePermissions(role, null, perms_ch);
 			if (channel.getModifiedPermissions(role).isEmpty())
 			{
 				channel.removePermissionsOverride(role);
-			}
+			}*/
 		}
+		channel.overrideRolePermissions(role, perms_ch, null);
 	}
 }

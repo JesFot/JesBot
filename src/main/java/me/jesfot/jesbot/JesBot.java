@@ -1,6 +1,7 @@
 package me.jesfot.jesbot;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,7 +66,7 @@ public class JesBot
 	
 	public Map<Long, Map<String, Poll>> polls;
 	
-	public void init()
+	public boolean init(boolean deamon)
 	{
 		this.configMain = new Configuration("jesbot.cfg");
 		
@@ -82,11 +83,22 @@ public class JesBot
 		
 		try
 		{
-			this.client = Utils.getClient(Statics.TOKEN, Statics.LOGIN_ON_START);
+			Configuration secrets = new Configuration(Statics.SECRETS_FILE_NAME);
+			secrets.init();
+			String token = secrets.getProps().getProperty("bot.token");
+			if (token == null)
+			{
+				return false;
+			}
+			this.client = Utils.getClient(token, Statics.LOGIN_ON_START, deamon);
 		}
 		catch(DiscordException de)
 		{
 			de.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			return false;
 		}
 		
 		this.polls = new HashMap<Long, Map<String, Poll>>();
@@ -112,6 +124,8 @@ public class JesBot
 		
 		//Thread d = new WaitForEnd(this);
 		//d.start();
+		
+		return true;
 	}
 	
 	public static final JesBot getInstance()

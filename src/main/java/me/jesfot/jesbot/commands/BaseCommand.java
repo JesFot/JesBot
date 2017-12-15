@@ -137,6 +137,10 @@ public abstract class BaseCommand
 				Utils.sendSafeMessages(channel, sender.mention(true) + " Error : \"``" + error.getMessage() + "\"``");
 			}
 		}
+		catch (NullPointerException nulex)
+		{
+			return false;
+		}
 		return false;
 	}
 	

@@ -12,6 +12,7 @@ import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
 
 import me.jesfot.jesbot.Statics;
+import me.jesfot.jesbot.config.Configuration;
 
 public class Search
 {
@@ -31,7 +32,14 @@ public class Search
 		try
 		{
 			YouTube.Search.List search = youtube.search().list("id");
-			search.setKey(Statics.YT_API_KEY);
+			Configuration secrets = new Configuration(Statics.SECRETS_FILE_NAME);
+			secrets.init();
+			String apikey = secrets.getProps().getProperty("yt.apikey");
+			if (apikey == null)
+			{
+				return null;
+			}
+			search.setKey(apikey);
 			search.setQ(query);
 			
 			search.setType("video");
@@ -43,7 +51,7 @@ public class Search
 			List<SearchResult> searchResults = response.getItems();
 			
 			YouTube.Videos.List vidsearch = youtube.videos().list("id,snippet,statistics,contentDetails");
-			vidsearch.setKey(Statics.YT_API_KEY);
+			vidsearch.setKey(apikey);
 			
 			for(SearchResult r : searchResults)
 			{

@@ -70,54 +70,38 @@ public class ReportsCommand extends BaseCommand
 			{
 				EmbedBuilder embuilder = new EmbedBuilder();
 				embuilder.withTitle("Report details :");
-				embuilder.withAuthorName(sender.mention());
-				String msg = sender.mention(true) + " Report details :\n";
 				Report rep = ReportManager.get(allReports, args.get(1));
 				if (rep == null)
 				{
-					msg = "Report not found";
+					Utils.sendSafeMessages(channel, sender.mention(true) + " Report not found.");
 				}
 				else
 				{
 					IUser v_sender = channel.getGuild().getUserByID(Long.parseUnsignedLong(rep.getSenderID()));
 					IUser v_target = channel.getGuild().getUserByID(Long.parseUnsignedLong(rep.getTargetID()));
-					msg += "ID: " + args.get(1) + "\n  Name: " + rep.getName() + " [" + rep.getStatus().toString() + "]\n";
-					embuilder.appendField("ID", args.get(1), true).appendField("Name", rep.getName() + " [" + rep.getStatus().toString() + "]", true);
-					msg += "    " + Utils.formatUser(v_sender) + " reported " + Utils.formatUser(v_target) + "\n";
-					embuilder.appendDescription(Utils.formatUser(v_sender) + " reported " + Utils.formatUser(v_target));
 					IMessage message = channel.getGuild().getMessageByID(Long.parseUnsignedLong(rep.getMessageID()));
+					
+					embuilder.appendField("Reporter", Utils.formatUser(v_sender), true).appendField("Reported", Utils.formatUser(v_target), true);
+					embuilder.appendField("Name", rep.getName() + " [" + rep.getStatus().toString() + "]", false);
 					embuilder.appendField("Channel / Message IDs", channel.getGuild().getChannelByID(Long.parseUnsignedLong(rep.getChannelID())).mention()
 							+ " / " + rep.getMessageID(), true);
-					msg += " Channel / Message IDs: " + channel.getGuild().getChannelByID(Long.parseUnsignedLong(rep.getChannelID())).mention()
-							+ " / " + rep.getMessageID() + "\n";
+					
 					if (message == null)
 					{
 						embuilder.appendField("Message", "[Message deleted or not found]", true);
-						msg += " [Message deleted or not found]\n";
 					}
 					else
 					{
 						if (!message.getContent().contentEquals(rep.getContent()))
 						{
-							embuilder.appendField("Message", "[Edited message] \"``" + message.getContent() + "``\"\n[Original message] \"``" + rep.getContent() + "``\"", true);
-							msg += " [Edited message]\n";
-							msg += " \"``" + message.getContent() + "``\"\n";
-						}
-						else
-						{
-							embuilder.appendField("Message", "[Original message] \"``" + rep.getContent() + "``\"", true);
+							embuilder.appendField("Message", "[Edited message] \"``" + message.getContent() + "``\"", true);
 						}
 					}
-					msg += " [Original message]\n";
-					msg += " \"``" + rep.getContent() + "``\"\n";
+					embuilder.appendField("Original Message", "\"``" + rep.getContent() + "``\"", true);
 					embuilder.appendField("Reasons", rep.getReasons(), true);
-					msg += " Reasons : \n";
-					msg += "  ``" + rep.getReasons() + "``";
-					msg += "\n Date :\n  " + rep.getDate() + "\n";
 					embuilder.withFooterText(rep.getDate());
-					rep.setStatus(Status.READED);
+					rep.setStatus(Status.READ);
 				}
-				Utils.sendSafeMessages(channel, msg);
 				Utils.sendSafeEmbed(channel, embuilder.build());
 			}
 			Utils.deleteSafeMessages(datas);

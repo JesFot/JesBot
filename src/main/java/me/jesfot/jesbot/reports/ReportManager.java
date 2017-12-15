@@ -7,11 +7,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 
-import me.cyril.care.nbtlib.NBTTagCompound;
 import me.jesfot.jesbot.Statics;
-import me.jesfot.jesbot.config.NBTConfig;
 import me.jesfot.jesbot.reports.Report.Status;
 import me.jesfot.jesbot.utils.MyLogger;
+import me.unei.configuration.api.format.INBTCompound;
+import me.unei.configuration.api.impl.NBTConfig;
+import me.unei.configuration.formats.nbtlib.TagCompound;
+
 import sx.blah.discord.handle.obj.IGuild;
 
 public class ReportManager
@@ -43,38 +45,26 @@ public class ReportManager
 	public void readConfig()
 	{
 		NBTConfig saveData = new NBTConfig(this.save_folder, this.fileName);
-		saveData.readNBTFromFile().writeNBTToFile();
-		/*if (this.save_folder != null && !this.save_folder.isDirectory())
-		{
-			if (!this.save_folder.exists())
-			{
-				this.save_folder.mkdirs();
-			}
-			else
-			{
-				this.save_folder = this.save_folder.getParentFile();
-				this.save_folder.mkdirs();
-			}
-		}*/
-		/*Configuration config = new Configuration(this.save_folder, "reports.cfg");
-		try
-		{
-			config.init();
-		}
-		catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}*/
+		saveData.reload();
+		saveData.save();
+		/*
+		 * if (this.save_folder != null && !this.save_folder.isDirectory()) { if
+		 * (!this.save_folder.exists()) { this.save_folder.mkdirs(); } else {
+		 * this.save_folder = this.save_folder.getParentFile();
+		 * this.save_folder.mkdirs(); } }
+		 */
+		/*
+		 * Configuration config = new Configuration(this.save_folder,
+		 * "reports.cfg"); try { config.init(); } catch (FileNotFoundException
+		 * e) { e.printStackTrace(); } catch (IOException e) {
+		 * e.printStackTrace(); }
+		 */
 		//Set<Object> values = config.getProps().keySet();
 		MyLogger logger = MyLogger.getLogger(Statics.BOT_NAME, "Report Manager");
 		
 		// Parsing Compound :
 		
-		Set<String> guilds = saveData.getCopy().keySet();
+		Set<String> guilds = saveData.getKeys();
 		
 		for (String guild : guilds)
 		{
@@ -85,7 +75,7 @@ public class ReportManager
 			}
 			
 			HashMap<String, Report> guildsReps = this.reports.get(guild);
-			NBTTagCompound guildComp = saveData.getCopy().getCompound(guild);
+			INBTCompound guildComp = saveData.getTagCopy().getCompound(guild);
 			Set<String> reportsID = guildComp.keySet();
 			
 			for (String reportID : reportsID)
@@ -96,9 +86,9 @@ public class ReportManager
 					guildsReps.put(reportID, new Report());
 				}
 				
-				NBTTagCompound reportComp = guildComp.getCompound(reportID);
+				INBTCompound reportComp = guildComp.getCompound(reportID);
 				Set<String> fields = reportComp.keySet();
-
+				
 				Report rep = guildsReps.get(reportID);
 				for (String field : fields)
 				{
@@ -107,85 +97,56 @@ public class ReportManager
 					{
 						missing += " ";
 					}
-					logger.log(Level.CONFIG, "Filling field '" + field.concat(missing) + "' of report \"" + reportID + "\" : \"" + reportComp.getString(field) + "\";");
+					logger.log(Level.CONFIG, "Filling field '" + field.concat(missing) + "' of report \"" + reportID
+							+ "\" : \"" + reportComp.getString(field) + "\";");
 					rep.setField(field, reportComp.getString(field));
 				}
 			}
 		}
 		
-		
-		/*for (Object value : values)
-		{
-			if (!(value instanceof String))
-			{
-				continue;
-			}
-			String str = new String(value.toString());
-			String[] splited = str.replace('.', '|').split("\\|");
-			if (splited.length < 3)
-			{
-				logger.info("Ignored key is : \"" + str + "\" Replaceing dots by '|' : \"" + str.replace('.', '|') + "\", length = " + splited.length + ";");
-				continue;
-			}
-			String guild = splited[0];
-			String id = splited[1];
-			String field = splited[2];
-			if (guild.length() != 18 || id.length() != 18)
-			{
-				logger.info("Ignored key is : \"" + str + "\" guild length == " + guild.length() + ", id length == " + id.length() + ";");
-				continue;
-			}
-			if (!this.reports.containsKey(guild))
-			{
-				logger.info("New guild reports data : \"" + guild + "\"");
-				this.reports.put(guild, new HashMap<String, Report>());
-			}
-			HashMap<String, Report> guildsReps = this.reports.get(guild);
-			if (!guildsReps.containsKey(id))
-			{
-				guildsReps.put(id, new Report());
-			}
-			Report rep = guildsReps.get(id);
-			rep.setField(field, config.getProps().getProperty(str));
-		}*/
+		/*
+		 * for (Object value : values) { if (!(value instanceof String)) {
+		 * continue; } String str = new String(value.toString()); String[]
+		 * splited = str.replace('.', '|').split("\\|"); if (splited.length < 3)
+		 * { logger.info("Ignored key is : \"" + str +
+		 * "\" Replaceing dots by '|' : \"" + str.replace('.', '|') +
+		 * "\", length = " + splited.length + ";"); continue; } String guild =
+		 * splited[0]; String id = splited[1]; String field = splited[2]; if
+		 * (guild.length() != 18 || id.length() != 18) { logger.info(
+		 * "Ignored key is : \"" + str + "\" guild length == " + guild.length()
+		 * + ", id length == " + id.length() + ";"); continue; } if
+		 * (!this.reports.containsKey(guild)) { logger.info(
+		 * "New guild reports data : \"" + guild + "\"");
+		 * this.reports.put(guild, new HashMap<String, Report>()); }
+		 * HashMap<String, Report> guildsReps = this.reports.get(guild); if
+		 * (!guildsReps.containsKey(id)) { guildsReps.put(id, new Report()); }
+		 * Report rep = guildsReps.get(id); rep.setField(field,
+		 * config.getProps().getProperty(str)); }
+		 */
 	}
 	
 	public void saveConfig()
 	{
 		NBTConfig saveData = new NBTConfig(this.save_folder, this.fileName);
 		
-		/*if (this.save_folder != null && !this.save_folder.isDirectory())
-		{
-			if (!this.save_folder.exists())
-			{
-				this.save_folder.mkdirs();
-			}
-			else
-			{
-				this.save_folder = this.save_folder.getParentFile();
-				this.save_folder.mkdirs();
-			}
-		}
-		Configuration config = new Configuration(this.save_folder, "reports.cfg");
-		try
-		{
-			config.init();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return;
-		}*/
+		/*
+		 * if (this.save_folder != null && !this.save_folder.isDirectory()) { if
+		 * (!this.save_folder.exists()) { this.save_folder.mkdirs(); } else {
+		 * this.save_folder = this.save_folder.getParentFile();
+		 * this.save_folder.mkdirs(); } } Configuration config = new
+		 * Configuration(this.save_folder, "reports.cfg"); try { config.init();
+		 * } catch (Exception e) { e.printStackTrace(); return; }
+		 */
 		
-		NBTTagCompound globalComp = new NBTTagCompound();
+		INBTCompound globalComp = new TagCompound();
 		
 		for (Entry<String, HashMap<String, Report>> guild : this.reports.entrySet())
 		{
-			NBTTagCompound guildComp = new NBTTagCompound();
+			INBTCompound guildComp = new TagCompound();
 			
 			for (Entry<String, Report> reportsID : guild.getValue().entrySet())
 			{
-				NBTTagCompound reportComp = new NBTTagCompound();
+				INBTCompound reportComp = new TagCompound();
 				reportComp.setString("name", reportsID.getValue().getName());
 				reportComp.setString("sender", reportsID.getValue().getSenderID());
 				reportComp.setString("target", reportsID.getValue().getTargetID());
@@ -196,33 +157,40 @@ public class ReportManager
 				reportComp.setString("date", reportsID.getValue().getDate());
 				reportComp.setString("status", reportsID.getValue().getStatus().id());
 				
-				guildComp.put(reportsID.getKey(), reportComp);
+				guildComp.set(reportsID.getKey(), reportComp);
 			}
 			
-			globalComp.put(guild.getKey(), guildComp);
+			globalComp.set(guild.getKey(), guildComp);
 		}
 		
-		saveData.setCopy(globalComp).writeNBTToFile();
+		saveData.setTagCopy(globalComp);
+		saveData.save();
 		
-		
-		/*config.getProps().clear();
-		for (Entry<String, HashMap<String, Report>> entry : this.reports.entrySet())
-		{
-			for (Entry<String, Report> entryReps : entry.getValue().entrySet())
-			{
-				String repl = ReportManager.model.replace("<guild>", entry.getKey()).replace("<id>", entryReps.getKey());
-				config.getProps().setProperty(repl.replace("<field>", "name"), entryReps.getValue().getName());
-				config.getProps().setProperty(repl.replace("<field>", "sender"), entryReps.getValue().getSenderID());
-				config.getProps().setProperty(repl.replace("<field>", "target"), entryReps.getValue().getTargetID());
-				config.getProps().setProperty(repl.replace("<field>", "message"), entryReps.getValue().getMessageID());
-				config.getProps().setProperty(repl.replace("<field>", "content"), entryReps.getValue().getContent());
-				config.getProps().setProperty(repl.replace("<field>", "channel"), entryReps.getValue().getChannelID());
-				config.getProps().setProperty(repl.replace("<field>", "reason"), entryReps.getValue().getReasons());
-				config.getProps().setProperty(repl.replace("<field>", "date"), entryReps.getValue().getDate());
-				config.getProps().setProperty(repl.replace("<field>", "status"), entryReps.getValue().getStatus().id());
-			}
-		}
-		config.save();*/
+		/*
+		 * config.getProps().clear(); for (Entry<String, HashMap<String,
+		 * Report>> entry : this.reports.entrySet()) { for (Entry<String,
+		 * Report> entryReps : entry.getValue().entrySet()) { String repl =
+		 * ReportManager.model.replace("<guild>",
+		 * entry.getKey()).replace("<id>", entryReps.getKey());
+		 * config.getProps().setProperty(repl.replace("<field>", "name"),
+		 * entryReps.getValue().getName());
+		 * config.getProps().setProperty(repl.replace("<field>", "sender"),
+		 * entryReps.getValue().getSenderID());
+		 * config.getProps().setProperty(repl.replace("<field>", "target"),
+		 * entryReps.getValue().getTargetID());
+		 * config.getProps().setProperty(repl.replace("<field>", "message"),
+		 * entryReps.getValue().getMessageID());
+		 * config.getProps().setProperty(repl.replace("<field>", "content"),
+		 * entryReps.getValue().getContent());
+		 * config.getProps().setProperty(repl.replace("<field>", "channel"),
+		 * entryReps.getValue().getChannelID());
+		 * config.getProps().setProperty(repl.replace("<field>", "reason"),
+		 * entryReps.getValue().getReasons());
+		 * config.getProps().setProperty(repl.replace("<field>", "date"),
+		 * entryReps.getValue().getDate());
+		 * config.getProps().setProperty(repl.replace("<field>", "status"),
+		 * entryReps.getValue().getStatus().id()); } } config.save();
+		 */
 	}
 	
 	public HashMap<String, Report> getReportsForGuild(IGuild guild)
@@ -246,9 +214,9 @@ public class ReportManager
 			return;
 		}
 		Report rep = this.reports.get(guild.getStringID()).remove(id);
-		rep.setStatus(Status.CANCELED);
+		rep.setStatus(Status.CANCELLED);
 	}
-
+	
 	public void addReport(IGuild guild, String id, Report report)
 	{
 		if (!this.reports.containsKey(guild.getStringID()))

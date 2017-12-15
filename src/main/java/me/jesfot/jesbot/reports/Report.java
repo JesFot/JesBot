@@ -10,7 +10,7 @@ public class Report
 	private String messageID = "";
 	private String channelID = "";
 	private String date = "";
-	private Status status = Status.CANCELED;
+	private Status status = Status.CANCELLED;
 	
 	public Report()
 	{
@@ -149,17 +149,19 @@ public class Report
 	
 	public static enum Status
 	{
-		THROWED("thr"),
-		READED("readed"),
-		WORKING("working"),
-		CANCELED("canceled"),
-		APPLYED("applyed");
+		THROWN("thr", "thr"),
+		READ("read", "readed"),
+		WORKING("working", "working"),
+		CANCELLED("cancelled", "canceled"),
+		APPLIED("applied", "applyed");
 		
 		private final String ID;
+		private final String old;
 		
-		private Status(final String p_id)
+		private Status(final String p_id, final String p_old)
 		{
 			this.ID = p_id;
+			this.old = p_old;
 		}
 		
 		public String id()
@@ -171,7 +173,7 @@ public class Report
 		{
 			for (Status status : Status.values())
 			{
-				if (status.id().equalsIgnoreCase(id))
+				if (status.id().equalsIgnoreCase(id) || status.old.equalsIgnoreCase(id))
 				{
 					return status;
 				}
