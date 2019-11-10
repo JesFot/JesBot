@@ -25,17 +25,14 @@ public class CommandSayas extends CommandBase
 	@Override
 	protected boolean execute(CommandContext context, CommandResult state) throws CommandError
 	{
-		if (context.getArgs().size() < 1)
+		if (context.getArgs().isEmpty())
 		{
 			state.setStatus(CommandStatus.Failure);
 			return false;
 		}
-		if (context.hasOriginDiscordMessage())
+		if (context.hasOriginDiscordMessage() && Utils.deleteSafeMessages(context.getOriginDiscordMessage()) != 0)
 		{
-			if (Utils.deleteSafeMessages(context.getOriginDiscordMessage()) != 0)
-			{
-				state.setStatus(CommandStatus.Failure);
-			}
+			state.setStatus(CommandStatus.Failure);
 		}
 		IChannel destChannel = context.getOriginDiscordChannel();
 		IGuild destGuild = (destChannel != null ? destChannel.getGuild() : null);

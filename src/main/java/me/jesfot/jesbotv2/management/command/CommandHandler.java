@@ -23,7 +23,7 @@ public final class CommandHandler
 	
 	public CommandHandler()
 	{
-		this.commands = new HashMap<String, CommandBase>();
+		this.commands = new HashMap<>();
 		this.changePrefix(Statics.COMMAND_DESIGNATOR);
 	}
 	

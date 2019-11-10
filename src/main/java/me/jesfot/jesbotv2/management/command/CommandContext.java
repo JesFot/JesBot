@@ -108,7 +108,7 @@ public final class CommandContext
 	
 	private static List<String> parseArguments(String content)
 	{
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		Matcher ma = CommandContext.ARGUMENTS_PATTERN.matcher(content);
 		while (ma.find())
 		{

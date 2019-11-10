@@ -14,22 +14,12 @@ public final class CommandResult
 		this.status = status;
 	}
 	
-	/*
-	 * public void setFailure(CommandFailure failure) {
-	 * this.setStatus(CommandStatus.FAILURE); this.failure = failure; }
-	 */
 	public CommandStatus getStatus()
 	{
 		return this.status;
 	}
 	
-	/*
-	 * public boolean failed() { if (this.failure == null) { return false; }
-	 * return this.status.equals(CommandStatus.FAILURE); }
-	 *//*
-		 * public CommandFailure getFailure() { return this.failure; }
-		 */
-	public static enum CommandStatus
+	public enum CommandStatus
 	{
 		Preprocessing,
 		Processing,

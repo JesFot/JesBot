@@ -94,7 +94,7 @@ public abstract class CommandBase
 	public void onFailure(CommandContext context, CommandResult result)
 	{
 		CommandBase.logCommand(context, result, null);
-	};
+	}
 	
 	private final void notActivated(CommandContext context, CommandResult state)
 	{
@@ -149,18 +149,18 @@ public abstract class CommandBase
 		Logger logger = JesBot.getInstance().getLogger();
 		if (context.getSender().isConsole() && message != null)
 		{
-			logger.info("[CommandManager] " + message);
+			logger.info(() -> "[CommandManager] " + message);
 		}
 		else if (!context.getSender().isConsole())
 		{
-			logger.info("[CommandManager] [" + context.getOriginDiscordMessage().getGuild().getName() + "] ("
+			logger.info(() -> "[CommandManager] [" + context.getOriginDiscordMessage().getGuild().getName() + "] ("
 					+ context.getOriginDiscordChannel().getName() + ") "
 					+ context.getSender().getDiscordUser().getName() + "#"
 					+ context.getSender().getDiscordUser().getDiscriminator() + " used command ["
 					+ result.getStatus().name() + "]" + context.getFullCommand());
 			if (result.getStatus().equals(CommandStatus.Failure))
 			{
-				logger.info("[CommandManager] [" + context.getOriginDiscordMessage().getGuild().getName() + "] ("
+				logger.info(() -> "[CommandManager] [" + context.getOriginDiscordMessage().getGuild().getName() + "] ("
 						+ context.getOriginDiscordChannel().getName() + ") "
 						+ context.getSender().getDiscordUser().getName() + "#"
 						+ context.getSender().getDiscordUser().getDiscriminator() + " [Failure reason : " + message
@@ -168,7 +168,7 @@ public abstract class CommandBase
 			}
 			else if (message != null)
 			{
-				logger.info("[CommandManager] [" + context.getOriginDiscordMessage().getGuild().getName() + "] ("
+				logger.info(() -> "[CommandManager] [" + context.getOriginDiscordMessage().getGuild().getName() + "] ("
 						+ context.getOriginDiscordChannel().getName() + ") "
 						+ context.getSender().getDiscordUser().getName() + "#"
 						+ context.getSender().getDiscordUser().getDiscriminator() + " more infos : " + message);
@@ -176,10 +176,10 @@ public abstract class CommandBase
 		}
 		else
 		{
-			logger.info("[CommandManager] Command state : " + result.getStatus().name());
+			logger.info(() -> "[CommandManager] Command state : " + result.getStatus().name());
 			if (result.getStatus().equals(CommandStatus.Failure))
 			{
-				logger.info("[CommandManager] Failure reason : " + message);
+				logger.info(() -> "[CommandManager] Failure reason : " + message);
 			}
 		}
 	}

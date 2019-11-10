@@ -18,6 +18,9 @@ import sx.blah.discord.util.RateLimitException;
 
 public class Utils
 {
+	private Utils()
+	{ staticClass(); }
+	
 	public static IDiscordClient getClient(String token, boolean login, boolean deamon) throws DiscordException
 	{
 		ClientBuilder builder = new ClientBuilder();
@@ -306,5 +309,10 @@ public class Utils
 		{
 			return p_default;
 		}
+	}
+	
+	public static void staticClass()
+	{
+		throw new IllegalStateException("Cannot create an instance of a static class");
 	}
 }

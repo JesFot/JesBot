@@ -35,12 +35,13 @@ public class CommandStop extends CommandBase
 			Utils.deleteSafeMessages(context.getOriginDiscordMessage());
 		}
 		String reason = "R.A.S.";
-		if (context.getArgs().size() > 0)
+		if (!context.getArgs().isEmpty())
 		{
 			reason = context.compileArgumentsFrom(0);
 		}
 		context.getSender().sendMessage("Ok, I'm now going to sleep for a while...");
-		this.bot.getLogger().warning("Normal shutdown : " + reason);
+		final String fReason = reason;
+		this.bot.getLogger().warning(() -> "Normal shutdown : " + fReason);
 		this.bot.stop(reason);
 		return true;
 	}
